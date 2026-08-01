@@ -98,9 +98,14 @@ export function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-5 text-xs text-stone-muted md:flex-row md:justify-between md:px-6">
+        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-5 text-xs text-stone-muted md:flex-row md:items-center md:justify-between md:px-6">
           <p>© {new Date().getFullYear()} Pakhuis Tiles. All rights reserved.</p>
-          <p>POPIA compliant · Secure quotations</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <p>POPIA compliant · Secure quotations</p>
+            <Link href="/staff" className="hover:text-stone-soft">
+              Staff login
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
