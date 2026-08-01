@@ -2,8 +2,15 @@ import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { isAdminEmail } from "@/lib/admin-allowlist";
 import { prisma } from "@/lib/prisma";
+
+const STAFF_ROLES = new Set([
+  "ADMIN",
+  "STORE_MANAGER",
+  "SALES",
+  "WAREHOUSE",
+  "FINANCE",
+]);
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -32,15 +39,13 @@ export const authOptions: NextAuthOptions = {
           permissions = [];
         }
 
-        // Only the allowlisted Pakhuis emails get admin access
-        const finalRole = isAdminEmail(user.email) ? "ADMIN" : "CUSTOMER";
-
+        // Role comes from the database (Users table) — not a hardcoded email list
         return {
           id: user.id,
           email: user.email,
           name: user.name,
-          role: finalRole,
-          permissions: finalRole === "ADMIN" ? permissions : [],
+          role: user.role,
+          permissions,
         };
       },
     }),
@@ -52,14 +57,6 @@ export const authOptions: NextAuthOptions = {
         token.role = user.role;
         token.permissions = user.permissions;
         token.email = user.email;
-      }
-      // Re-check allowlist on every request token refresh
-      if (token.email && !isAdminEmail(String(token.email)) && token.role !== "CUSTOMER") {
-        token.role = "CUSTOMER";
-        token.permissions = [];
-      }
-      if (token.email && isAdminEmail(String(token.email))) {
-        token.role = "ADMIN";
       }
       return token;
     },
@@ -76,13 +73,13 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-export function isStaffRole(role: string) {
-  return role === "ADMIN";
+export function isStaffRole(role?: string | null) {
+  return Boolean(role && STAFF_ROLES.has(role));
 }
 
-/** Staff portal access: must be allowlisted admin email + ADMIN role */
-export function canAccessAdmin(role?: string | null, email?: string | null) {
-  return Boolean(role === "ADMIN" && isAdminEmail(email));
+/** Admin portal access is based on the user's role in the database. */
+export function canAccessAdmin(role?: string | null, _email?: string | null) {
+  return isStaffRole(role);
 }
 
 export async function requireStaffSession() {

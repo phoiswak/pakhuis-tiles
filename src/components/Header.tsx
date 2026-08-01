@@ -18,21 +18,19 @@ const links = [
   { href: "/contact", label: "Contact" },
 ];
 
-const adminEmails = new Set([
-  "admin@pakhuis.co.za",
-  "annemarie@pakhuis.co.za",
-  "lincoln@pakhuis.co.za",
-  "portia@pakhuis.co.za",
+const staffRoles = new Set([
+  "ADMIN",
+  "STORE_MANAGER",
+  "SALES",
+  "WAREHOUSE",
+  "FINANCE",
 ]);
 
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
-  const isAdmin =
-    session?.user?.role === "ADMIN" &&
-    !!session.user.email &&
-    adminEmails.has(session.user.email.toLowerCase());
+  const isAdmin = session?.user?.role ? staffRoles.has(session.user.role) : false;
   const hideChrome = pathname.startsWith("/admin");
 
   if (hideChrome) return null;

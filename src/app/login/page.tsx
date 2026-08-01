@@ -17,9 +17,8 @@ function LoginForm() {
     setLoading(true);
     setError("");
     const form = new FormData(e.currentTarget);
-    const email = String(form.get("email")).toLowerCase().trim();
     const res = await signIn("credentials", {
-      email,
+      email: String(form.get("email")),
       password: String(form.get("password")),
       redirect: false,
     });
@@ -28,19 +27,8 @@ function LoginForm() {
       setError("Invalid email or password.");
       return;
     }
-    const adminEmails = [
-      "admin@pakhuis.co.za",
-      "annemarie@pakhuis.co.za",
-      "lincoln@pakhuis.co.za",
-      "portia@pakhuis.co.za",
-    ];
-    const dest =
-      callbackUrl.startsWith("/admin") || adminEmails.includes(email)
-        ? callbackUrl.startsWith("/admin")
-          ? callbackUrl
-          : "/admin"
-        : callbackUrl;
-    router.push(dest);
+    // Staff who open /staff or /admin land in the portal; others go to account
+    router.push(callbackUrl);
     router.refresh();
   }
 
@@ -49,7 +37,11 @@ function LoginForm() {
       <p className="section-kicker">Account</p>
       <h1 className="mt-2 font-display text-4xl text-ink">Sign in</h1>
       <p className="mt-3 text-sm text-ink-muted">
-        Staff: use your Pakhuis email. Customers: use your registered account.
+        Staff members: use{" "}
+        <Link href="/staff" className="text-moss hover:underline">
+          Staff login
+        </Link>
+        . Customers: sign in with your registered account.
       </p>
       <form onSubmit={onSubmit} className="mt-8 space-y-4 border border-stone-line bg-white p-6">
         <label className="block">
