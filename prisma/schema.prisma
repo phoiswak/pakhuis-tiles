@@ -220,7 +220,10 @@ model QuoteRequest {
   notes            String?
   productSlug      String?
   installation     Boolean   @default(false)
+  /// NEW | CONTACTED | QUOTED | WON | LOST | CLOSED
   status           String    @default("NEW")
+  adminNotes       String?
+  lastContactedAt  DateTime?
   customerId       String?
   customer         Customer? @relation(fields: [customerId], references: [id])
   createdAt        DateTime  @default(now())

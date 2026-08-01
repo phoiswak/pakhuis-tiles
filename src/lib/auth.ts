@@ -2,6 +2,7 @@ import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import { isAdminEmail } from "@/lib/admin-allowlist";
 import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
@@ -30,12 +31,16 @@ export const authOptions: NextAuthOptions = {
         } catch {
           permissions = [];
         }
+
+        // Only the allowlisted Pakhuis emails get admin access
+        const finalRole = isAdminEmail(user.email) ? "ADMIN" : "CUSTOMER";
+
         return {
           id: user.id,
           email: user.email,
           name: user.name,
-          role: user.role,
-          permissions,
+          role: finalRole,
+          permissions: finalRole === "ADMIN" ? permissions : [],
         };
       },
     }),
@@ -46,16 +51,25 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = user.role;
         token.permissions = user.permissions;
+        token.email = user.email;
+      }
+      // Re-check allowlist on every request token refresh
+      if (token.email && !isAdminEmail(String(token.email)) && token.role !== "CUSTOMER") {
+        token.role = "CUSTOMER";
+        token.permissions = [];
+      }
+      if (token.email && isAdminEmail(String(token.email))) {
+        token.role = "ADMIN";
       }
       return token;
     },
     async session({ session, token }) {
       session.user = {
-        id: token.id,
-        email: session.user?.email || "",
+        id: token.id as string,
+        email: (token.email as string) || session.user?.email || "",
         name: session.user?.name || "",
-        role: token.role,
-        permissions: token.permissions || [],
+        role: (token.role as string) || "CUSTOMER",
+        permissions: (token.permissions as string[]) || [],
       };
       return session;
     },
@@ -63,12 +77,17 @@ export const authOptions: NextAuthOptions = {
 };
 
 export function isStaffRole(role: string) {
-  return ["ADMIN", "STORE_MANAGER", "SALES", "WAREHOUSE", "FINANCE"].includes(role);
+  return role === "ADMIN";
+}
+
+/** Staff portal access: must be allowlisted admin email + ADMIN role */
+export function canAccessAdmin(role?: string | null, email?: string | null) {
+  return Boolean(role === "ADMIN" && isAdminEmail(email));
 }
 
 export async function requireStaffSession() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.role || !isStaffRole(session.user.role)) {
+  if (!canAccessAdmin(session?.user?.role, session?.user?.email)) {
     return null;
   }
   return session;

@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
-import { authOptions, isStaffRole } from "@/lib/auth";
+import { authOptions, canAccessAdmin } from "@/lib/auth";
 
 const nav = [
   { href: "/admin", label: "Dashboard" },
+  { href: "/admin/quotes", label: "Quotes" },
   { href: "/admin/products", label: "Products" },
   { href: "/admin/stock", label: "Stock" },
   { href: "/admin/orders", label: "Orders" },
@@ -14,7 +15,6 @@ const nav = [
   { href: "/admin/damage", label: "Damage" },
   { href: "/admin/users", label: "Users" },
   { href: "/admin/reports", label: "Reports" },
-  { href: "/admin/quotes", label: "Quotes" },
   { href: "/admin/notifications", label: "Notifications" },
 ];
 
@@ -24,7 +24,7 @@ export const metadata = {
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.role || !isStaffRole(session.user.role)) {
+  if (!canAccessAdmin(session?.user?.role, session?.user?.email)) {
     redirect("/login?callbackUrl=/admin");
   }
 

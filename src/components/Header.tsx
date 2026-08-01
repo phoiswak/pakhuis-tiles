@@ -18,13 +18,21 @@ const links = [
   { href: "/contact", label: "Contact" },
 ];
 
-const staffRoles = new Set(["ADMIN", "STORE_MANAGER", "SALES", "WAREHOUSE", "FINANCE"]);
+const adminEmails = new Set([
+  "admin@pakhuis.co.za",
+  "annemarie@pakhuis.co.za",
+  "lincoln@pakhuis.co.za",
+  "portia@pakhuis.co.za",
+]);
 
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
-  const isStaff = session?.user?.role ? staffRoles.has(session.user.role) : false;
+  const isAdmin =
+    session?.user?.role === "ADMIN" &&
+    !!session.user.email &&
+    adminEmails.has(session.user.email.toLowerCase());
   const hideChrome = pathname.startsWith("/admin");
 
   if (hideChrome) return null;
@@ -66,7 +74,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           {session ? (
             <>
-              {isStaff && (
+              {isAdmin && (
                 <Link href="/admin" className="btn-secondary hidden md:inline-flex">
                   Admin
                 </Link>
@@ -107,7 +115,7 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            {isStaff && (
+            {isAdmin && (
               <Link href="/admin" className="px-3 py-2.5 text-sm" onClick={() => setOpen(false)}>
                 Admin
               </Link>

@@ -17,8 +17,9 @@ function LoginForm() {
     setLoading(true);
     setError("");
     const form = new FormData(e.currentTarget);
+    const email = String(form.get("email")).toLowerCase().trim();
     const res = await signIn("credentials", {
-      email: String(form.get("email")),
+      email,
       password: String(form.get("password")),
       redirect: false,
     });
@@ -27,7 +28,19 @@ function LoginForm() {
       setError("Invalid email or password.");
       return;
     }
-    router.push(callbackUrl);
+    const adminEmails = [
+      "admin@pakhuis.co.za",
+      "annemarie@pakhuis.co.za",
+      "lincoln@pakhuis.co.za",
+      "portia@pakhuis.co.za",
+    ];
+    const dest =
+      callbackUrl.startsWith("/admin") || adminEmails.includes(email)
+        ? callbackUrl.startsWith("/admin")
+          ? callbackUrl
+          : "/admin"
+        : callbackUrl;
+    router.push(dest);
     router.refresh();
   }
 
@@ -36,8 +49,7 @@ function LoginForm() {
       <p className="section-kicker">Account</p>
       <h1 className="mt-2 font-display text-4xl text-ink">Sign in</h1>
       <p className="mt-3 text-sm text-ink-muted">
-        Demo: <code>admin@pakhuistiles.co.za</code> or <code>customer@example.com</code> /{" "}
-        <code>password123</code>
+        Staff: use your Pakhuis email. Customers: use your registered account.
       </p>
       <form onSubmit={onSubmit} className="mt-8 space-y-4 border border-stone-line bg-white p-6">
         <label className="block">

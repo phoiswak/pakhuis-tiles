@@ -1,12 +1,15 @@
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
-
-const staffRoles = new Set(["ADMIN", "STORE_MANAGER", "SALES", "WAREHOUSE", "FINANCE"]);
+import { isAdminEmail } from "@/lib/admin-allowlist";
 
 export default withAuth(
   function middleware(req) {
     const role = req.nextauth.token?.role as string | undefined;
-    if (req.nextUrl.pathname.startsWith("/admin") && (!role || !staffRoles.has(role))) {
+    const email = req.nextauth.token?.email as string | undefined;
+    if (
+      req.nextUrl.pathname.startsWith("/admin") &&
+      (role !== "ADMIN" || !isAdminEmail(email))
+    ) {
       return NextResponse.redirect(new URL("/login?callbackUrl=/admin", req.url));
     }
     return NextResponse.next();

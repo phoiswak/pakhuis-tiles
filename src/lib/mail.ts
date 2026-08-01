@@ -100,6 +100,38 @@ export async function sendQuoteEmail(data: {
   });
 }
 
+export async function sendQuoteReplyEmail(data: {
+  to: string;
+  customerName: string;
+  subject: string;
+  message: string;
+  quoteId: string;
+}) {
+  const transporter = getTransporter();
+  const fromUser = process.env.SMTP_USER || "sales@pakhuis.co.za";
+  await transporter.sendMail({
+    from: `"Pakhuis Tiles Sales" <${fromUser}>`,
+    to: data.to,
+    cc: quoteTo,
+    replyTo: fromUser,
+    subject: data.subject,
+    text: [
+      `Hi ${data.customerName},`,
+      "",
+      data.message,
+      "",
+      "—",
+      "Pakhuis Tiles",
+      `Quote ref: ${data.quoteId}`,
+    ].join("\n"),
+    html: `
+      <p>Hi ${escapeHtml(data.customerName)},</p>
+      <p style="white-space:pre-wrap;font-family:sans-serif;font-size:14px">${escapeHtml(data.message)}</p>
+      <p style="color:#666;font-size:12px">Pakhuis Tiles · Quote ref: ${escapeHtml(data.quoteId)}</p>
+    `,
+  });
+}
+
 export async function sendContactEmail(data: {
   name: string;
   email: string;
