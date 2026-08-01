@@ -43,3 +43,9 @@ next-env.d.ts
 # local form submissions
 /data/*.json
 !/data/.gitkeep
+
+# sqlite
+/prisma/*.db
+/prisma/*.db-journal
+.env
+.env*.local

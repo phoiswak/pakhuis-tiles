@@ -1,45 +1,70 @@
 # Pakhuis Tiles
 
-Phase 1 storefront for **Pakhuis Tiles** (Pretoria East) — product catalogue, tile calculator, quote requests, gallery, blog and contact.
-
-Built to match the [Lovable prototype](https://tilecraft-connect.lovable.app) and the Website Scope of Work (customer-facing MVP). Admin portal, cart/checkout and inventory land in later phases.
+Full e-commerce & stock management platform for **Pakhuis Tiles** (Pretoria East), based on the Website Scope of Work.
 
 ## Stack
 
 - Next.js 16 (App Router) + TypeScript + Tailwind CSS 4
-- Typed product catalogue (`src/data/catalog.ts`)
-- Quote & contact submissions saved to `data/` as JSON (swap for Postgres later)
+- Prisma 5 + SQLite (swap `DATABASE_URL` to PostgreSQL for production)
+- NextAuth credentials (customers + staff roles)
 
-## Getting started
+## Quick start
 
 ```bash
 npm install
+npm run db:setup
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
 
+### Demo logins
+
+| Role     | Email                         | Password    |
+| -------- | ----------------------------- | ----------- |
+| Admin    | `admin@pakhuistiles.co.za`    | `password123` |
+| Customer | `customer@example.com`        | `password123` |
+
+Also seeded: store manager, sales, warehouse, finance (same password).
+
+## What’s included (SOW)
+
+### Customer-facing
+- Home, catalogue, product pages, specials
+- Tile calculator, quote requests (incl. installation)
+- Gallery, blog, about, contact
+- Cart, checkout (delivery/collection), order confirmation
+- Customer accounts: register/login, profile, order history, invoice download
+
+### Admin portal (`/admin`)
+- Dashboard (sales, orders, customers, stock value, low stock, promos, damage)
+- Products & pricing (retail / contractor / wholesale / promo)
+- Stock receiving & movements
+- Orders & status workflow
+- Customers & suppliers
+- Promotions
+- Damage / waste tracking
+- Staff users & roles
+- Quotes inbox & notifications
+- CSV reports (sales, inventory, damage, suppliers, customers)
+
+### Security
+- Password hashing (bcrypt)
+- Role-gated admin routes
+- Session auth via NextAuth
+
 ## Scripts
 
-| Command       | Description        |
-| ------------- | ------------------ |
-| `npm run dev` | Local development  |
+| Command | Description |
+| ------- | ----------- |
+| `npm run dev` | Local development |
 | `npm run build` | Production build |
-| `npm start`   | Run production     |
+| `npm run db:setup` | Push schema + seed |
+| `npm run db:seed` | Re-seed demo data |
 
-## What's included
+## Production notes
 
-- Home, shop catalogue, category & product pages
-- Specials, tile calculator, quote form
-- Gallery, blog, about, contact
-- API routes: `POST /api/quotes`, `POST /api/contact`
-
-## Next phases (from SOW)
-
-1. Customer accounts, cart, PayFast checkout  
-2. Admin portal — stock, suppliers, promotions, reports  
-3. Role permissions, notifications, Sage/Pastel integration  
-
-## Business details (placeholders)
-
-Update phone/email in `src/data/catalog.ts` (`SITE`) when real credentials are ready.
+- Set strong `NEXTAUTH_SECRET` and real `NEXTAUTH_URL`
+- Use PostgreSQL in production (`DATABASE_URL`)
+- Wire PayFast credentials for live card payments (demo checkout records orders + invoices today)
+- Optional: email/SMS notifications via Resend / Twilio

@@ -31,7 +31,7 @@ export const SITE = {
   address: "Plot 10, Garsfontein Road, Pretoria East, Gauteng",
   phone: "+27 12 000 0000",
   phoneHref: "tel:+27120000000",
-  email: "sales@pakhuistiles.co.za",
+  email: "sales@pakhuis.co.za",
   hours: "Mon–Fri 08:00–17:00 · Sat 08:00–14:00",
   deliveryAreas: [
     "Pretoria",

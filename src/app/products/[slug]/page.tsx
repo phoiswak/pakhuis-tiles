@@ -14,7 +14,7 @@ import type { Metadata } from "next";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
 }
 
@@ -22,10 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = getProduct(slug);
   if (!product) return { title: "Product" };
-  return {
-    title: product.name,
-    description: product.description,
-  };
+  return { title: product.name, description: product.description };
 }
 
 export default async function ProductPage({ params }: Props) {
@@ -34,11 +31,18 @@ export default async function ProductPage({ params }: Props) {
   if (!product) notFound();
 
   const category = getCategory(product.categorySlug);
-  const related = getProductsByCategory(product.categorySlug)
-    .filter((p) => p.slug !== product.slug)
-    .slice(0, 3);
   const price = effectivePrice(product);
   const onPromo = product.promoPricePerM2 != null;
+  const relatedCatalog = getProductsByCategory(product.categorySlug)
+    .filter((p) => p.slug !== product.slug)
+    .slice(0, 3);
+
+  const stockLabel =
+    product.stockStatus === "IN_STOCK"
+      ? "In Stock"
+      : product.stockStatus === "LOW_STOCK"
+        ? "Low Stock"
+        : "Out of Stock";
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">
@@ -46,13 +50,11 @@ export default async function ProductPage({ params }: Props) {
         <Link href="/tiles" className="hover:text-moss">
           Shop Tiles
         </Link>
+        {" / "}
         {category && (
-          <>
-            {" / "}
-            <Link href={`/tiles/${category.slug}`} className="hover:text-moss">
-              {category.name}
-            </Link>
-          </>
+          <Link href={`/tiles/${category.slug}`} className="hover:text-moss">
+            {category.name}
+          </Link>
         )}
       </p>
 
@@ -76,11 +78,7 @@ export default async function ProductPage({ params }: Props) {
               </span>
             )}
             <span className="border border-stone-line bg-white px-2 py-1 text-[10px] font-medium tracking-wider text-ink uppercase">
-              {product.stockStatus === "IN_STOCK"
-                ? "In Stock"
-                : product.stockStatus === "LOW_STOCK"
-                  ? "Low Stock"
-                  : "Out of Stock"}
+              {stockLabel}
             </span>
           </div>
           <h1 className="mt-4 font-display text-4xl text-ink md:text-5xl">{product.name}</h1>
@@ -115,7 +113,7 @@ export default async function ProductPage({ params }: Props) {
             </div>
             <div>
               <dt className="text-ink-muted">Category</dt>
-              <dd className="mt-1 font-medium text-ink">{category?.name ?? "—"}</dd>
+              <dd className="mt-1 font-medium text-ink">{category?.name ?? product.categorySlug}</dd>
             </div>
           </dl>
 
@@ -133,11 +131,11 @@ export default async function ProductPage({ params }: Props) {
         </div>
       </div>
 
-      {related.length > 0 && (
+      {relatedCatalog.length > 0 && (
         <section className="mt-16">
           <h2 className="font-display text-2xl text-ink">Related tiles</h2>
           <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((p) => (
+            {relatedCatalog.map((p) => (
               <ProductCard key={p.slug} product={p} />
             ))}
           </div>

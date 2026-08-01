@@ -40,7 +40,11 @@ export function QuoteForm({ defaultCategory, defaultQuantity, productSlug }: Pro
       const res = await fetch("/api/quotes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, productSlug }),
+        body: JSON.stringify({
+          ...payload,
+          productSlug,
+          installation: form.get("installation") === "true",
+        }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -167,7 +171,15 @@ export function QuoteForm({ defaultCategory, defaultQuantity, productSlug }: Pro
       </section>
 
       <section className="space-y-4">
-        <h2 className="font-display text-xl text-ink">5. Additional notes</h2>
+        <h2 className="font-display text-xl text-ink">5. Installation</h2>
+        <label className="flex items-start gap-3 text-sm text-ink">
+          <input type="checkbox" name="installation" value="true" className="mt-1" />
+          <span>I also need tile installation services (we&apos;ll include this in the quote)</span>
+        </label>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="font-display text-xl text-ink">6. Additional notes</h2>
         <label className="block">
           <span className="field-label">Anything else we should know?</span>
           <textarea name="notes" rows={4} className="field min-h-[120px]" />
