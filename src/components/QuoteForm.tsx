@@ -33,7 +33,8 @@ export function QuoteForm({ defaultCategory, defaultQuantity, productSlug }: Pro
     e.preventDefault();
     setStatus("loading");
     setError("");
-    const form = new FormData(e.currentTarget);
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
     const payload = Object.fromEntries(form.entries());
 
     try {
@@ -51,7 +52,7 @@ export function QuoteForm({ defaultCategory, defaultQuantity, productSlug }: Pro
         throw new Error(data.error || "Could not submit quote");
       }
       setStatus("success");
-      e.currentTarget.reset();
+      formEl.reset();
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Something went wrong");

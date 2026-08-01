@@ -10,7 +10,8 @@ export function ContactForm() {
     e.preventDefault();
     setStatus("loading");
     setError("");
-    const form = new FormData(e.currentTarget);
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
     const payload = Object.fromEntries(form.entries());
 
     try {
@@ -24,7 +25,7 @@ export function ContactForm() {
         throw new Error(data.error || "Could not send message");
       }
       setStatus("success");
-      e.currentTarget.reset();
+      formEl.reset();
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Something went wrong");
