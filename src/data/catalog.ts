@@ -478,6 +478,31 @@ Our Karoo Sandstone and Lagoon Pool Edge ranges are stocked specifically for loc
   },
 ];
 
+export function searchProducts(query: string) {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+
+  const terms = q.split(/\s+/).filter(Boolean);
+
+  return products.filter((product) => {
+    const category = getCategory(product.categorySlug);
+    const haystack = [
+      product.name,
+      product.sku,
+      product.description,
+      product.sizeMm,
+      product.finish,
+      product.material,
+      product.categorySlug,
+      category?.name ?? "",
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    return terms.every((term) => haystack.includes(term));
+  });
+}
+
 export function getProduct(slug: string) {
   return products.find((p) => p.slug === slug);
 }

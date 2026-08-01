@@ -5,7 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
+import { SearchBar } from "@/components/SearchBar";
 import { cn } from "@/lib/utils";
 
 const links = [
@@ -29,6 +30,7 @@ const staffRoles = new Set([
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const { data: session } = useSession();
   const isAdmin = session?.user?.role ? staffRoles.has(session.user.role) : false;
   const hideChrome = pathname.startsWith("/admin");
@@ -70,6 +72,19 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <SearchBar className="hidden w-52 xl:block xl:w-64" />
+          <button
+            type="button"
+            className="inline-flex h-10 w-10 items-center justify-center border border-stone-line text-ink xl:hidden"
+            aria-label="Search tiles"
+            aria-expanded={searchOpen}
+            onClick={() => {
+              setSearchOpen((v) => !v);
+              setOpen(false);
+            }}
+          >
+            <Search size={18} />
+          </button>
           {session ? (
             <>
               {isAdmin && (
@@ -93,16 +108,30 @@ export function Header() {
             type="button"
             className="inline-flex h-10 w-10 items-center justify-center border border-stone-line text-ink lg:hidden"
             aria-label={open ? "Close menu" : "Open menu"}
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => {
+              setOpen((v) => !v);
+              setSearchOpen(false);
+            }}
           >
             {open ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>
 
+      {searchOpen && (
+        <div className="border-t border-stone-line bg-stone-canvas px-4 py-3 md:px-6 xl:hidden">
+          <div className="mx-auto max-w-6xl">
+            <SearchBar autoFocus />
+          </div>
+        </div>
+      )}
+
       {open && (
         <div className="border-t border-stone-line bg-stone-canvas lg:hidden">
           <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4">
+            <div className="mb-2">
+              <SearchBar />
+            </div>
             {links.map((link) => (
               <Link
                 key={link.href}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/ProductCard";
+import { SearchBar } from "@/components/SearchBar";
 import { categories, products } from "@/data/catalog";
 import type { Metadata } from "next";
 
@@ -18,7 +19,11 @@ export default function TilesPage() {
         quote and our sales team will get back to you with pricing.
       </p>
 
-      <div className="mt-8 flex flex-wrap gap-2">
+      <div className="mt-8 max-w-xl">
+        <SearchBar />
+      </div>
+
+      <div className="mt-6 flex flex-wrap gap-2">
         <Link href="/tiles" className="border border-moss bg-moss px-3 py-1.5 text-sm text-white">
           All
         </Link>
