@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       parsed.data.installation === "true" ||
       parsed.data.installation === "on";
 
-    let quoteId = randomUUID();
+    let quoteId: string = randomUUID();
 
     try {
       const quote = await prisma.quoteRequest.create({

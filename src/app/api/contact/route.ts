@@ -23,7 +23,7 @@ export async function POST(request: Request) {
       );
     }
 
-    let id = randomUUID();
+    let id: string = randomUUID();
     try {
       const message = await prisma.contactMessage.create({ data: parsed.data });
       id = message.id;
