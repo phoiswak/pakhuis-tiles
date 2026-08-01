@@ -24,7 +24,7 @@ export const metadata = {
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
-  if (!canAccessAdmin(session?.user?.role, session?.user?.email)) {
+  if (!session?.user || !canAccessAdmin(session.user.role, session.user.email)) {
     redirect("/login?callbackUrl=/admin");
   }
 
