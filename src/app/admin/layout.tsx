@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
-import { authOptions, canAccessAdmin } from "@/lib/auth";
+import { authOptions, canAccessAdmin, isAdminRole } from "@/lib/auth";
 
 const nav = [
   { href: "/admin", label: "Dashboard" },
@@ -13,7 +13,7 @@ const nav = [
   { href: "/admin/suppliers", label: "Suppliers" },
   { href: "/admin/promotions", label: "Promotions" },
   { href: "/admin/damage", label: "Damage" },
-  { href: "/admin/users", label: "Users" },
+  { href: "/admin/users", label: "Users", adminOnly: true },
   { href: "/admin/reports", label: "Reports" },
   { href: "/admin/notifications", label: "Notifications" },
 ];
@@ -28,6 +28,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect("/login?callbackUrl=/admin");
   }
 
+  const showAdminOnly = isAdminRole(session.user.role);
+  const visibleNav = nav.filter((item) => !item.adminOnly || showAdminOnly);
+
   return (
     <div className="flex min-h-screen bg-stone-canvas">
       <aside className="flex w-56 shrink-0 flex-col bg-ink text-stone-soft">
@@ -36,7 +39,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <p className="mt-0.5 text-xs text-stone-muted">Admin Portal</p>
         </div>
         <nav className="flex flex-1 flex-col gap-0.5 p-3">
-          {nav.map((item) => (
+          {visibleNav.map((item) => (
             <Link
               key={item.href}
               href={item.href}

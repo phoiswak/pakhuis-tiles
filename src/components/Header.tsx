@@ -5,8 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
-import { Menu, Search, X } from "lucide-react";
-import { SearchBar } from "@/components/SearchBar";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const links = [
@@ -30,9 +29,8 @@ const staffRoles = new Set([
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const { data: session } = useSession();
-  const isAdmin = session?.user?.role ? staffRoles.has(session.user.role) : false;
+  const isStaff = session?.user?.role ? staffRoles.has(session.user.role) : false;
   const hideChrome = pathname.startsWith("/admin");
 
   if (hideChrome) return null;
@@ -76,32 +74,9 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
-          <div className="hidden items-center gap-3 lg:flex">
-            <SearchBar className="w-44 xl:w-56" />
-            <Link
-              href="/quote"
-              className="btn-primary h-10 shrink-0 px-4 py-0 whitespace-nowrap"
-            >
-              Request Quote
-            </Link>
-          </div>
-
-          <button
-            type="button"
-            className="inline-flex h-10 w-10 items-center justify-center border border-stone-line bg-white text-ink lg:hidden"
-            aria-label="Search tiles"
-            aria-expanded={searchOpen}
-            onClick={() => {
-              setSearchOpen((v) => !v);
-              setOpen(false);
-            }}
-          >
-            <Search size={18} />
-          </button>
-
           {session ? (
             <>
-              {isAdmin && (
+              {isStaff && (
                 <Link
                   href="/admin"
                   className="btn-secondary hidden h-10 px-3 py-0 md:inline-flex"
@@ -111,7 +86,7 @@ export function Header() {
               )}
               <button
                 type="button"
-                className="btn-secondary hidden h-10 px-3 py-0 xl:inline-flex"
+                className="btn-secondary hidden h-10 px-3 py-0 lg:inline-flex"
                 onClick={() => signOut({ callbackUrl: "/" })}
               >
                 Sign out
@@ -121,7 +96,7 @@ export function Header() {
 
           <Link
             href="/quote"
-            className="btn-primary h-10 px-3 py-0 whitespace-nowrap sm:px-4 lg:hidden"
+            className="btn-primary h-10 px-3 py-0 whitespace-nowrap sm:px-4"
           >
             Request Quote
           </Link>
@@ -130,30 +105,16 @@ export function Header() {
             type="button"
             className="inline-flex h-10 w-10 items-center justify-center border border-stone-line bg-white text-ink lg:hidden"
             aria-label={open ? "Close menu" : "Open menu"}
-            onClick={() => {
-              setOpen((v) => !v);
-              setSearchOpen(false);
-            }}
+            onClick={() => setOpen((v) => !v)}
           >
             {open ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>
 
-      {searchOpen && (
-        <div className="border-t border-stone-line bg-stone-canvas px-4 py-3 md:px-6 lg:hidden">
-          <div className="mx-auto max-w-6xl">
-            <SearchBar autoFocus />
-          </div>
-        </div>
-      )}
-
       {open && (
         <div className="border-t border-stone-line bg-stone-canvas lg:hidden">
           <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4">
-            <div className="mb-3 flex items-center gap-2">
-              <SearchBar className="min-w-0 flex-1" />
-            </div>
             {links.map((link) => (
               <Link
                 key={link.href}
@@ -164,10 +125,22 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            {isAdmin && (
+            {isStaff && (
               <Link href="/admin" className="px-3 py-2.5 text-sm" onClick={() => setOpen(false)}>
                 Admin
               </Link>
+            )}
+            {session && (
+              <button
+                type="button"
+                className="px-3 py-2.5 text-left text-sm text-ink hover:bg-stone-soft"
+                onClick={() => {
+                  setOpen(false);
+                  void signOut({ callbackUrl: "/" });
+                }}
+              >
+                Sign out
+              </button>
             )}
             <Link
               href="/quote"

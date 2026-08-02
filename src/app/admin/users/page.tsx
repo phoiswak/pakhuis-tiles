@@ -1,9 +1,17 @@
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
 import { UserCreateForm } from "@/components/admin/UserCreateForm";
+import { authOptions, isAdminRole } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 const staffRoles = ["ADMIN", "STORE_MANAGER", "SALES", "WAREHOUSE", "FINANCE"];
 
 export default async function AdminUsersPage() {
+  const session = await getServerSession(authOptions);
+  if (!isAdminRole(session?.user?.role)) {
+    redirect("/admin");
+  }
+
   const users = await prisma.user.findMany({
     where: { role: { in: staffRoles } },
     orderBy: { name: "asc" },

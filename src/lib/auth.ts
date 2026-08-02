@@ -89,3 +89,16 @@ export async function requireStaffSession() {
   }
   return session;
 }
+
+/** Only true ADMIN role — not other staff, never customers. */
+export function isAdminRole(role?: string | null) {
+  return role === "ADMIN";
+}
+
+export async function requireAdminSession() {
+  const session = await getServerSession(authOptions);
+  if (!isAdminRole(session?.user?.role)) {
+    return null;
+  }
+  return session;
+}

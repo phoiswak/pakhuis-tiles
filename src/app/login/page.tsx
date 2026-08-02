@@ -41,7 +41,11 @@ function LoginForm() {
         <Link href="/staff" className="text-moss hover:underline">
           Staff login
         </Link>
-        . Customers: sign in with your registered account.
+        . Need an account?{" "}
+        <Link href="/contact" className="text-moss hover:underline">
+          Contact us
+        </Link>
+        .
       </p>
       <form onSubmit={onSubmit} className="mt-8 space-y-4 border border-stone-line bg-white p-6">
         <label className="block">
@@ -57,12 +61,6 @@ function LoginForm() {
           {loading ? "Signing in…" : "Sign in"}
         </button>
       </form>
-      <p className="mt-4 text-sm text-ink-muted">
-        No account?{" "}
-        <Link href="/register" className="text-moss hover:underline">
-          Register
-        </Link>
-      </p>
     </div>
   );
 }
