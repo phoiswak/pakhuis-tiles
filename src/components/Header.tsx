@@ -39,8 +39,12 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-stone-line/80 bg-stone-canvas/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-6">
-        <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
+      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 md:gap-5 md:px-6">
+        <Link
+          href="/"
+          className="flex shrink-0 items-center gap-3"
+          onClick={() => setOpen(false)}
+        >
           <Image
             src="/images/logo.jpg"
             alt="Pakhuis Tiles logo"
@@ -54,13 +58,13 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-5 lg:flex">
+        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-4 xl:gap-5 lg:flex">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                "text-sm tracking-wide text-ink-muted transition hover:text-ink",
+                "shrink-0 text-sm tracking-wide text-ink-muted transition hover:text-ink",
                 pathname === link.href || pathname.startsWith(`${link.href}/`)
                   ? "text-ink font-medium"
                   : "",
@@ -71,11 +75,20 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <SearchBar className="hidden w-52 xl:block xl:w-64" />
+        <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
+          <div className="hidden items-center gap-3 lg:flex">
+            <SearchBar className="w-44 xl:w-56" />
+            <Link
+              href="/quote"
+              className="btn-primary h-10 shrink-0 px-4 py-0 whitespace-nowrap"
+            >
+              Request Quote
+            </Link>
+          </div>
+
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center border border-stone-line text-ink xl:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center border border-stone-line bg-white text-ink lg:hidden"
             aria-label="Search tiles"
             aria-expanded={searchOpen}
             onClick={() => {
@@ -85,28 +98,37 @@ export function Header() {
           >
             <Search size={18} />
           </button>
+
           {session ? (
             <>
               {isAdmin && (
-                <Link href="/admin" className="btn-secondary hidden md:inline-flex">
+                <Link
+                  href="/admin"
+                  className="btn-secondary hidden h-10 px-3 py-0 md:inline-flex"
+                >
                   Admin
                 </Link>
               )}
               <button
                 type="button"
-                className="btn-secondary hidden lg:inline-flex"
+                className="btn-secondary hidden h-10 px-3 py-0 xl:inline-flex"
                 onClick={() => signOut({ callbackUrl: "/" })}
               >
                 Sign out
               </button>
             </>
           ) : null}
-          <Link href="/quote" className="btn-primary hidden sm:inline-flex">
+
+          <Link
+            href="/quote"
+            className="btn-primary h-10 px-3 py-0 whitespace-nowrap sm:px-4 lg:hidden"
+          >
             Request Quote
           </Link>
+
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center border border-stone-line text-ink lg:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center border border-stone-line bg-white text-ink lg:hidden"
             aria-label={open ? "Close menu" : "Open menu"}
             onClick={() => {
               setOpen((v) => !v);
@@ -119,7 +141,7 @@ export function Header() {
       </div>
 
       {searchOpen && (
-        <div className="border-t border-stone-line bg-stone-canvas px-4 py-3 md:px-6 xl:hidden">
+        <div className="border-t border-stone-line bg-stone-canvas px-4 py-3 md:px-6 lg:hidden">
           <div className="mx-auto max-w-6xl">
             <SearchBar autoFocus />
           </div>
@@ -129,8 +151,8 @@ export function Header() {
       {open && (
         <div className="border-t border-stone-line bg-stone-canvas lg:hidden">
           <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4">
-            <div className="mb-2">
-              <SearchBar />
+            <div className="mb-3 flex items-center gap-2">
+              <SearchBar className="min-w-0 flex-1" />
             </div>
             {links.map((link) => (
               <Link
@@ -147,7 +169,11 @@ export function Header() {
                 Admin
               </Link>
             )}
-            <Link href="/quote" className="btn-primary mt-2 justify-center" onClick={() => setOpen(false)}>
+            <Link
+              href="/quote"
+              className="btn-primary mt-3 h-11 justify-center"
+              onClick={() => setOpen(false)}
+            >
               Request Quote
             </Link>
           </nav>

@@ -11,6 +11,7 @@ type Props = {
   inputClassName?: string;
   placeholder?: string;
   autoFocus?: boolean;
+  id?: string;
 };
 
 export function SearchBar({
@@ -19,6 +20,7 @@ export function SearchBar({
   inputClassName,
   placeholder = "Search tiles, size, colour…",
   autoFocus = false,
+  id = "site-search",
 }: Props) {
   const router = useRouter();
   const [query, setQuery] = useState(initialQuery);
@@ -35,7 +37,7 @@ export function SearchBar({
 
   return (
     <form onSubmit={onSubmit} className={cn("relative", className)} role="search">
-      <label htmlFor="site-search" className="sr-only">
+      <label htmlFor={id} className="sr-only">
         Search tiles
       </label>
       <Search
@@ -44,14 +46,14 @@ export function SearchBar({
         aria-hidden
       />
       <input
-        id="site-search"
+        id={id}
         type="search"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
         autoFocus={autoFocus}
         className={cn(
-          "field h-10 w-full border-stone-line bg-white py-2 pr-3 pl-9 text-sm",
+          "field h-10 w-full border-stone-line bg-white py-2 pr-3 pl-9 text-sm leading-none",
           inputClassName,
         )}
       />
