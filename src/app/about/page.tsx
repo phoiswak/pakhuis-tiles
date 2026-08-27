@@ -42,7 +42,7 @@ export default function AboutPage() {
         </div>
         <div className="relative min-h-[360px] overflow-hidden border border-stone-line">
           <Image
-            src="/images/hero-showroom.jpg"
+            src="/images/tile-38.jpg"
             alt="Pakhuis Tiles showroom"
             fill
             className="object-cover"

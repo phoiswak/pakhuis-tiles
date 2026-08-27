@@ -3,8 +3,8 @@ import { getGalleryItems } from "@/lib/catalog";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Project Gallery",
-  description: "Completed residential and commercial tile projects by Pakhuis Tiles customers.",
+  title: "Tile Gallery",
+  description: "Browse the full range of tiles in stock at Pakhuis Tiles, Pretoria East.",
 };
 
 export default async function GalleryPage() {
@@ -12,15 +12,16 @@ export default async function GalleryPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">
-      <p className="section-kicker">Inspiration</p>
-      <h1 className="mt-2 font-display text-4xl text-ink md:text-5xl">Project Gallery</h1>
+      <p className="section-kicker">Our range</p>
+      <h1 className="mt-2 font-display text-4xl text-ink md:text-5xl">Tile Gallery</h1>
       <p className="mt-4 max-w-2xl text-ink-muted">
-        Real homes and commercial spaces finished with tiles from our Pretoria East warehouse.
+        600×1200mm matt porcelain from our Pretoria East warehouse. Visit the showroom to see
+        samples, or request a quote.
       </p>
       <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {galleryItems.map((item) => (
-          <figure key={item.title} className="overflow-hidden border border-stone-line bg-white">
-            <div className="relative aspect-[4/3]">
+          <figure key={item.image} className="overflow-hidden border border-stone-line bg-white">
+            <div className="relative aspect-[3/4]">
               <Image
                 src={item.image}
                 alt={item.title}
@@ -31,9 +32,8 @@ export default async function GalleryPage() {
             </div>
             <figcaption className="p-4">
               <h2 className="font-display text-xl text-ink">{item.title}</h2>
-              <p className="mt-1 text-sm text-ink-muted">{item.description}</p>
-              {item.location && (
-                <p className="mt-2 text-xs tracking-wide text-moss uppercase">{item.location}</p>
+              {item.description && (
+                <p className="mt-1 text-sm text-ink-muted">{item.description}</p>
               )}
             </figcaption>
           </figure>

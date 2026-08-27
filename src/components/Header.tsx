@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -18,19 +17,9 @@ const links = [
   { href: "/contact", label: "Contacts" },
 ];
 
-const staffRoles = new Set([
-  "ADMIN",
-  "STORE_MANAGER",
-  "SALES",
-  "WAREHOUSE",
-  "FINANCE",
-]);
-
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const { data: session } = useSession();
-  const isStaff = session?.user?.role ? staffRoles.has(session.user.role) : false;
   const hideChrome = pathname.startsWith("/admin");
 
   if (hideChrome) return null;
@@ -80,26 +69,6 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
-          {session ? (
-            <>
-              {isStaff && (
-                <Link
-                  href="/admin"
-                  className="btn-secondary hidden h-10 px-3 py-0 md:inline-flex"
-                >
-                  Admin
-                </Link>
-              )}
-              <button
-                type="button"
-                className="btn-secondary hidden h-10 px-3 py-0 lg:inline-flex"
-                onClick={() => signOut({ callbackUrl: "/" })}
-              >
-                Sign out
-              </button>
-            </>
-          ) : null}
-
           <Link
             href="/quote"
             className="btn-primary h-10 px-3 py-0 whitespace-nowrap sm:px-4"
@@ -131,23 +100,6 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            {isStaff && (
-              <Link href="/admin" className="px-3 py-2.5 text-sm" onClick={() => setOpen(false)}>
-                Admin
-              </Link>
-            )}
-            {session && (
-              <button
-                type="button"
-                className="px-3 py-2.5 text-left text-sm text-ink hover:bg-stone-soft"
-                onClick={() => {
-                  setOpen(false);
-                  void signOut({ callbackUrl: "/" });
-                }}
-              >
-                Sign out
-              </button>
-            )}
             <Link
               href="/quote"
               className="btn-primary mt-3 h-11 justify-center"

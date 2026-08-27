@@ -1,4 +1,10 @@
 import type { Category, Product, StockStatus } from "@/data/catalog";
+import {
+  blogPosts as catalogBlogPosts,
+  categories as catalogCategories,
+  galleryItems as catalogGalleryItems,
+  products as catalogProducts,
+} from "@/data/catalog";
 import { prisma } from "@/lib/prisma";
 import { stockLabel } from "@/lib/pricing";
 
@@ -49,6 +55,8 @@ export async function getCategories(): Promise<Category[]> {
     include: { _count: { select: { products: { where: { active: true } } } } },
   });
 
+  if (rows.length === 0) return catalogCategories;
+
   return rows.map((c) => ({
     slug: c.slug,
     name: c.name,
@@ -63,15 +71,17 @@ export async function getCategory(slug: string): Promise<Category | null> {
     where: { slug },
     include: { _count: { select: { products: { where: { active: true } } } } },
   });
-  if (!c) return null;
+  if (c) {
+    return {
+      slug: c.slug,
+      name: c.name,
+      description: c.description ?? "",
+      image: c.image ?? "",
+      collectionCount: c._count.products,
+    };
+  }
 
-  return {
-    slug: c.slug,
-    name: c.name,
-    description: c.description ?? "",
-    image: c.image ?? "",
-    collectionCount: c._count.products,
-  };
+  return catalogCategories.find((category) => category.slug === slug) ?? null;
 }
 
 export async function getProducts(): Promise<Product[]> {
@@ -80,7 +90,7 @@ export async function getProducts(): Promise<Product[]> {
     include: productInclude,
     orderBy: { name: "asc" },
   });
-  return rows.map(mapProduct);
+  return rows.length > 0 ? rows.map(mapProduct) : catalogProducts;
 }
 
 export async function getProduct(slug: string): Promise<Product | null> {
@@ -88,7 +98,8 @@ export async function getProduct(slug: string): Promise<Product | null> {
     where: { slug, active: true },
     include: productInclude,
   });
-  return p ? mapProduct(p) : null;
+  if (p) return mapProduct(p);
+  return catalogProducts.find((product) => product.slug === slug) ?? null;
 }
 
 export async function getProductsByCategory(slug: string): Promise<Product[]> {
@@ -97,7 +108,8 @@ export async function getProductsByCategory(slug: string): Promise<Product[]> {
     include: productInclude,
     orderBy: { name: "asc" },
   });
-  return rows.map(mapProduct);
+  if (rows.length > 0) return rows.map(mapProduct);
+  return catalogProducts.filter((product) => product.categorySlug === slug);
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
@@ -106,7 +118,8 @@ export async function getFeaturedProducts(): Promise<Product[]> {
     include: productInclude,
     orderBy: { name: "asc" },
   });
-  return rows.map(mapProduct);
+  if (rows.length > 0) return rows.map(mapProduct);
+  return catalogProducts.filter((product) => product.isFeatured);
 }
 
 export async function getSpecials(): Promise<Product[]> {
@@ -118,7 +131,10 @@ export async function getSpecials(): Promise<Product[]> {
     include: productInclude,
     orderBy: { name: "asc" },
   });
-  return rows.map(mapProduct);
+  if (rows.length > 0) return rows.map(mapProduct);
+  return catalogProducts.filter(
+    (product) => product.isSpecial || product.promoPricePerM2 != null,
+  );
 }
 
 export async function searchProducts(query: string): Promise<Product[]> {
@@ -149,13 +165,46 @@ export async function searchProducts(query: string): Promise<Product[]> {
 }
 
 export async function getGalleryItems() {
-  return prisma.galleryItem.findMany({ orderBy: { sortOrder: "asc" } });
+  return catalogGalleryItems.map((item, sortOrder) => ({
+    id: item.image,
+    title: item.title,
+    description: item.description,
+    image: item.image,
+    location: item.location ?? null,
+    sortOrder,
+    createdAt: new Date(0),
+  }));
 }
 
 export async function getBlogPosts() {
-  return prisma.blogPost.findMany({ orderBy: { publishedAt: "desc" } });
+  const rows = await prisma.blogPost.findMany({ orderBy: { publishedAt: "desc" } });
+  if (rows.length > 0) return rows;
+
+  return catalogBlogPosts.map((post) => ({
+    id: post.slug,
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt,
+    content: post.content,
+    image: post.image,
+    publishedAt: new Date(0),
+  }));
 }
 
 export async function getBlogPost(slug: string) {
-  return prisma.blogPost.findUnique({ where: { slug } });
+  const post = await prisma.blogPost.findUnique({ where: { slug } });
+  if (post) return post;
+
+  const fallback = catalogBlogPosts.find((item) => item.slug === slug);
+  if (!fallback) return null;
+
+  return {
+    id: fallback.slug,
+    slug: fallback.slug,
+    title: fallback.title,
+    excerpt: fallback.excerpt,
+    content: fallback.content,
+    image: fallback.image,
+    publishedAt: new Date(0),
+  };
 }
