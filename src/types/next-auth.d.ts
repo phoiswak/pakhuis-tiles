@@ -24,5 +24,7 @@ declare module "next-auth/jwt" {
     role?: string;
     permissions?: string[];
     staffLoginAt?: number;
+    iat?: number;
+    exp?: number;
   }
 }
