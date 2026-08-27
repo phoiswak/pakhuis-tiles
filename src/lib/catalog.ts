@@ -49,89 +49,123 @@ function mapProduct(p: ProductRow): Product {
 
 const productInclude = { category: { select: { slug: true } } } as const;
 
-export async function getCategories(): Promise<Category[]> {
-  const rows = await prisma.category.findMany({
-    orderBy: { sortOrder: "asc" },
-    include: { _count: { select: { products: { where: { active: true } } } } },
-  });
-
-  if (rows.length === 0) return catalogCategories;
-
-  return rows.map((c) => ({
-    slug: c.slug,
-    name: c.name,
-    description: c.description ?? "",
-    image: c.image ?? "",
-    collectionCount: c._count.products,
-  }));
+function logCatalogFallback(fn: string, error: unknown) {
+  console.error(`[catalog] ${fn} falling back to bundled catalogue`, error);
 }
 
-export async function getCategory(slug: string): Promise<Category | null> {
-  const c = await prisma.category.findUnique({
-    where: { slug },
-    include: { _count: { select: { products: { where: { active: true } } } } },
-  });
-  if (c) {
-    return {
+export async function getCategories(): Promise<Category[]> {
+  try {
+    const rows = await prisma.category.findMany({
+      orderBy: { sortOrder: "asc" },
+      include: { _count: { select: { products: { where: { active: true } } } } },
+    });
+
+    if (rows.length === 0) return catalogCategories;
+
+    return rows.map((c) => ({
       slug: c.slug,
       name: c.name,
       description: c.description ?? "",
       image: c.image ?? "",
       collectionCount: c._count.products,
-    };
+    }));
+  } catch (error) {
+    logCatalogFallback("getCategories", error);
+    return catalogCategories;
+  }
+}
+
+export async function getCategory(slug: string): Promise<Category | null> {
+  try {
+    const c = await prisma.category.findUnique({
+      where: { slug },
+      include: { _count: { select: { products: { where: { active: true } } } } },
+    });
+    if (c) {
+      return {
+        slug: c.slug,
+        name: c.name,
+        description: c.description ?? "",
+        image: c.image ?? "",
+        collectionCount: c._count.products,
+      };
+    }
+  } catch (error) {
+    logCatalogFallback("getCategory", error);
   }
 
   return catalogCategories.find((category) => category.slug === slug) ?? null;
 }
 
 export async function getProducts(): Promise<Product[]> {
-  const rows = await prisma.product.findMany({
-    where: { active: true },
-    include: productInclude,
-    orderBy: { name: "asc" },
-  });
-  return rows.length > 0 ? rows.map(mapProduct) : catalogProducts;
+  try {
+    const rows = await prisma.product.findMany({
+      where: { active: true },
+      include: productInclude,
+      orderBy: { name: "asc" },
+    });
+    if (rows.length > 0) return rows.map(mapProduct);
+  } catch (error) {
+    logCatalogFallback("getProducts", error);
+  }
+  return catalogProducts;
 }
 
 export async function getProduct(slug: string): Promise<Product | null> {
-  const p = await prisma.product.findFirst({
-    where: { slug, active: true },
-    include: productInclude,
-  });
-  if (p) return mapProduct(p);
+  try {
+    const p = await prisma.product.findFirst({
+      where: { slug, active: true },
+      include: productInclude,
+    });
+    if (p) return mapProduct(p);
+  } catch (error) {
+    logCatalogFallback("getProduct", error);
+  }
   return catalogProducts.find((product) => product.slug === slug) ?? null;
 }
 
 export async function getProductsByCategory(slug: string): Promise<Product[]> {
-  const rows = await prisma.product.findMany({
-    where: { active: true, category: { slug } },
-    include: productInclude,
-    orderBy: { name: "asc" },
-  });
-  if (rows.length > 0) return rows.map(mapProduct);
+  try {
+    const rows = await prisma.product.findMany({
+      where: { active: true, category: { slug } },
+      include: productInclude,
+      orderBy: { name: "asc" },
+    });
+    if (rows.length > 0) return rows.map(mapProduct);
+  } catch (error) {
+    logCatalogFallback("getProductsByCategory", error);
+  }
   return catalogProducts.filter((product) => product.categorySlug === slug);
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
-  const rows = await prisma.product.findMany({
-    where: { active: true, isFeatured: true },
-    include: productInclude,
-    orderBy: { name: "asc" },
-  });
-  if (rows.length > 0) return rows.map(mapProduct);
+  try {
+    const rows = await prisma.product.findMany({
+      where: { active: true, isFeatured: true },
+      include: productInclude,
+      orderBy: { name: "asc" },
+    });
+    if (rows.length > 0) return rows.map(mapProduct);
+  } catch (error) {
+    logCatalogFallback("getFeaturedProducts", error);
+  }
   return catalogProducts.filter((product) => product.isFeatured);
 }
 
 export async function getSpecials(): Promise<Product[]> {
-  const rows = await prisma.product.findMany({
-    where: {
-      active: true,
-      OR: [{ isSpecial: true }, { promoPricePerM2: { not: null } }],
-    },
-    include: productInclude,
-    orderBy: { name: "asc" },
-  });
-  if (rows.length > 0) return rows.map(mapProduct);
+  try {
+    const rows = await prisma.product.findMany({
+      where: {
+        active: true,
+        OR: [{ isSpecial: true }, { promoPricePerM2: { not: null } }],
+      },
+      include: productInclude,
+      orderBy: { name: "asc" },
+    });
+    if (rows.length > 0) return rows.map(mapProduct);
+  } catch (error) {
+    logCatalogFallback("getSpecials", error);
+  }
   return catalogProducts.filter(
     (product) => product.isSpecial || product.promoPricePerM2 != null,
   );
@@ -177,8 +211,12 @@ export async function getGalleryItems() {
 }
 
 export async function getBlogPosts() {
-  const rows = await prisma.blogPost.findMany({ orderBy: { publishedAt: "desc" } });
-  if (rows.length > 0) return rows;
+  try {
+    const rows = await prisma.blogPost.findMany({ orderBy: { publishedAt: "desc" } });
+    if (rows.length > 0) return rows;
+  } catch (error) {
+    logCatalogFallback("getBlogPosts", error);
+  }
 
   return catalogBlogPosts.map((post) => ({
     id: post.slug,
@@ -192,8 +230,12 @@ export async function getBlogPosts() {
 }
 
 export async function getBlogPost(slug: string) {
-  const post = await prisma.blogPost.findUnique({ where: { slug } });
-  if (post) return post;
+  try {
+    const post = await prisma.blogPost.findUnique({ where: { slug } });
+    if (post) return post;
+  } catch (error) {
+    logCatalogFallback("getBlogPost", error);
+  }
 
   const fallback = catalogBlogPosts.find((item) => item.slug === slug);
   if (!fallback) return null;

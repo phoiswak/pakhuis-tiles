@@ -2,6 +2,8 @@ import { ProductCard } from "@/components/ProductCard";
 import { getSpecials } from "@/lib/catalog";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Specials & Promotions",
   description: "Monthly specials and promotional tile pricing from Pakhuis Tiles.",

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { getBlogPosts } from "@/lib/catalog";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "News",
   description: "Guides on measuring tiles, porcelain vs ceramic, and outdoor tiling in Gauteng.",

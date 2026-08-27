@@ -4,6 +4,8 @@ import { ProductCard } from "@/components/ProductCard";
 import { getCategories, getCategory, getProductsByCategory } from "@/lib/catalog";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 type Props = { params: Promise<{ category: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
