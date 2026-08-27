@@ -165,11 +165,8 @@ export async function searchProducts(query: string): Promise<Product[]> {
 }
 
 export async function getGalleryItems() {
-  const rows = await prisma.galleryItem.findMany({ orderBy: { sortOrder: "asc" } });
-  if (rows.length > 0) return rows;
-
   return catalogGalleryItems.map((item, sortOrder) => ({
-    id: item.title,
+    id: item.image,
     title: item.title,
     description: item.description,
     image: item.image,

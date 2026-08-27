@@ -48,35 +48,35 @@ export const categories: Category[] = [
     slug: "floor-tiles",
     name: "Floor Tiles",
     description: "Durable porcelain and ceramic floors for homes and commercial spaces.",
-    image: "/images/porcelain-grey.jpg",
+    image: "/images/tile-14.jpg",
     collectionCount: 4,
   },
   {
     slug: "wall-tiles",
     name: "Wall Tiles",
     description: "Bathroom, kitchen and feature-wall tiles with standout finishes.",
-    image: "/images/bathroom-wall.jpg",
+    image: "/images/tile-13.jpg",
     collectionCount: 3,
   },
   {
     slug: "outdoor-tiles",
     name: "Outdoor Tiles",
     description: "Slip-resistant patio, pool and garden tiles built for South African weather.",
-    image: "/images/outdoor-patio.jpg",
+    image: "/images/tile-12.jpg",
     collectionCount: 3,
   },
   {
     slug: "commercial-tiles",
     name: "Commercial Tiles",
     description: "High-traffic solutions for offices, retail and industrial projects.",
-    image: "/images/industrial.jpg",
+    image: "/images/tile-05.jpg",
     collectionCount: 3,
   },
   {
     slug: "luxury-collections",
     name: "Luxury Collections",
     description: "Marble-look, wood-look and statement tiles for premium interiors.",
-    image: "/images/marble-look.jpg",
+    image: "/images/tile-02.jpg",
     collectionCount: 3,
   },
 ];
@@ -88,7 +88,7 @@ export const products: Product[] = [
     name: "Urban Grey Porcelain",
     description:
       "A versatile large-format porcelain with a refined concrete-look finish. Ideal for open-plan living areas and commercial floors that need a modern, low-maintenance surface.",
-    image: "/images/porcelain-grey.jpg",
+    image: "/images/tile-14.jpg",
     sizeMm: "600x1200mm",
     finish: "Matt",
     material: "Porcelain",
@@ -104,7 +104,7 @@ export const products: Product[] = [
     name: "Classic White Ceramic",
     description:
       "Bright, clean ceramic flooring that opens up smaller rooms. A reliable everyday tile at a sharp monthly special price.",
-    image: "/images/ceramic-white.jpg",
+    image: "/images/tile-13.jpg",
     sizeMm: "600x600mm",
     finish: "Gloss",
     material: "Ceramic",
@@ -121,7 +121,7 @@ export const products: Product[] = [
     name: "Sahara Matt Beige",
     description:
       "Warm beige porcelain with a soft matt surface that hides dust and works beautifully with timber and brass accents.",
-    image: "/images/polished-cream.jpg",
+    image: "/images/tile-01.jpg",
     sizeMm: "600x600mm",
     finish: "Matt",
     material: "Porcelain",
@@ -137,7 +137,7 @@ export const products: Product[] = [
     name: "Ivory Polished Gloss",
     description:
       "A luminous ivory porcelain that reflects light and elevates entrance halls, bathrooms and showroom floors.",
-    image: "/images/polished-cream.jpg",
+    image: "/images/tile-04.jpg",
     sizeMm: "800x800mm",
     finish: "Polished",
     material: "Porcelain",
@@ -153,7 +153,7 @@ export const products: Product[] = [
     name: "Storm Grey Matt",
     description:
       "Deep charcoal-grey porcelain for contemporary kitchens and open-plan living. Soft matt grip underfoot.",
-    image: "/images/porcelain-grey.jpg",
+    image: "/images/tile-03.jpg",
     sizeMm: "600x600mm",
     finish: "Matt",
     material: "Porcelain",
@@ -169,7 +169,7 @@ export const products: Product[] = [
     name: "Sage Subway Bathroom Tile",
     description:
       "Soft sage subway tiles that bring calm colour to bathrooms and powder rooms without overwhelming the space.",
-    image: "/images/bathroom-wall.jpg",
+    image: "/images/tile-08.jpg",
     sizeMm: "75x300mm",
     finish: "Gloss",
     material: "Ceramic",
@@ -185,7 +185,7 @@ export const products: Product[] = [
     name: "Terracotta Kitchen Glaze",
     description:
       "Hand-glaze character in a practical kitchen format. Perfect for splashbacks and feature walls.",
-    image: "/images/kitchen-wall.jpg",
+    image: "/images/tile-19.jpg",
     sizeMm: "100x100mm",
     finish: "Gloss",
     material: "Ceramic",
@@ -201,7 +201,7 @@ export const products: Product[] = [
     name: "Marrakesh Décor Tile",
     description:
       "Patterned décor tiles inspired by North African motifs — use sparingly as a feature or full feature wall.",
-    image: "/images/bathroom-wall.jpg",
+    image: "/images/tile-06.jpg",
     sizeMm: "200x200mm",
     finish: "Gloss",
     material: "Ceramic",
@@ -217,7 +217,7 @@ export const products: Product[] = [
     name: "Karoo Sandstone Patio",
     description:
       "Outdoor porcelain with a natural sandstone look and textured grip for patios, walkways and braai areas.",
-    image: "/images/outdoor-patio.jpg",
+    image: "/images/tile-12.jpg",
     sizeMm: "600x600mm",
     finish: "Textured",
     material: "Porcelain",
@@ -233,7 +233,7 @@ export const products: Product[] = [
     name: "Lagoon Pool Edge",
     description:
       "Slip-resistant pool surround tile in a cool lagoon tone. Built for wet areas and Gauteng sun.",
-    image: "/images/outdoor-patio.jpg",
+    image: "/images/tile-09.jpg",
     sizeMm: "300x600mm",
     finish: "Anti-slip",
     material: "Porcelain",
@@ -249,7 +249,7 @@ export const products: Product[] = [
     name: "Garden Stone Path",
     description:
       "Rugged outdoor tile for garden paths and courtyards with a natural stone appearance.",
-    image: "/images/outdoor-patio.jpg",
+    image: "/images/tile-37.jpg",
     sizeMm: "400x400mm",
     finish: "Textured",
     material: "Porcelain",
@@ -265,7 +265,7 @@ export const products: Product[] = [
     name: "Forge Industrial Charcoal",
     description:
       "Heavy-duty charcoal porcelain for warehouses, workshops and high-traffic retail floors.",
-    image: "/images/industrial.jpg",
+    image: "/images/tile-07.jpg",
     sizeMm: "600x600mm",
     finish: "Matt",
     material: "Porcelain",
@@ -281,7 +281,7 @@ export const products: Product[] = [
     name: "Metro Office Grey",
     description:
       "Neutral commercial flooring designed for offices and corridors — durable, quiet and easy to clean.",
-    image: "/images/industrial.jpg",
+    image: "/images/tile-08.jpg",
     sizeMm: "600x1200mm",
     finish: "Matt",
     material: "Porcelain",
@@ -297,7 +297,7 @@ export const products: Product[] = [
     name: "Atrium Retail Polish",
     description:
       "Polished commercial porcelain that lifts retail atriums and showroom floors with a high-end sheen.",
-    image: "/images/marble-look.jpg",
+    image: "/images/tile-02.jpg",
     sizeMm: "800x800mm",
     finish: "Polished",
     material: "Porcelain",
@@ -313,7 +313,7 @@ export const products: Product[] = [
     name: "Carrara Marble-Look",
     description:
       "Luxury marble-look porcelain with soft grey veining. The showroom favourite for bathrooms and living areas.",
-    image: "/images/marble-look.jpg",
+    image: "/images/tile-25.jpg",
     sizeMm: "800x800mm",
     finish: "Polished",
     material: "Porcelain",
@@ -329,7 +329,7 @@ export const products: Product[] = [
     name: "Travertine Stone-Look",
     description:
       "Soft travertine character without the maintenance of natural stone. Warm and timeless.",
-    image: "/images/polished-cream.jpg",
+    image: "/images/tile-17.jpg",
     sizeMm: "600x1200mm",
     finish: "Matt",
     material: "Porcelain",
@@ -345,7 +345,7 @@ export const products: Product[] = [
     name: "Oakland Wood Plank",
     description:
       "Wood-look porcelain planks with authentic grain. Perfect where timber won’t survive wet areas or pets.",
-    image: "/images/wood-look.jpg",
+    image: "/images/tile-11.jpg",
     sizeMm: "200x1200mm",
     finish: "Matt",
     material: "Porcelain",
@@ -362,7 +362,7 @@ export const products: Product[] = [
     name: "Noir Marble Statement",
     description:
       "Dramatic black marble-look porcelain for bold feature floors and walls in luxury homes.",
-    image: "/images/marble-look.jpg",
+    image: "/images/tile-05.jpg",
     sizeMm: "800x800mm",
     finish: "Polished",
     material: "Porcelain",
@@ -402,42 +402,47 @@ export const testimonials = [
 ];
 
 export const galleryItems = [
-  {
-    title: "Pretoria East family home",
-    description: "Full-house porcelain floors in Urban Grey.",
-    image: "/images/porcelain-grey.jpg",
-    location: "Garsfontein",
-  },
-  {
-    title: "Sage bathroom refresh",
-    description: "Subway walls with Ivory polished floors.",
-    image: "/images/bathroom-wall.jpg",
-    location: "Centurion",
-  },
-  {
-    title: "Karoo patio & braai",
-    description: "Outdoor sandstone-look with anti-slip finish.",
-    image: "/images/outdoor-patio.jpg",
-    location: "Midrand",
-  },
-  {
-    title: "Retail showroom atrium",
-    description: "Commercial polished porcelain for high traffic.",
-    image: "/images/industrial.jpg",
-    location: "Johannesburg",
-  },
-  {
-    title: "Carrara ensuite",
-    description: "Marble-look luxury suite for a new build.",
-    image: "/images/marble-look.jpg",
-    location: "Waterkloof",
-  },
-  {
-    title: "Oakland open-plan living",
-    description: "Wood-look planks through kitchen and lounge.",
-    image: "/images/wood-look.jpg",
-    location: "Menlyn",
-  },
+  { title: "Forest Sand", description: "600×1200mm matt porcelain · RG50043", image: "/images/tile-01.jpg" },
+  { title: "Calacatta Gold", description: "600×1200mm matt porcelain · RG50030", image: "/images/tile-02.jpg" },
+  { title: "Cloud Grey", description: "600×1200mm matt porcelain · RG50002", image: "/images/tile-03.jpg" },
+  { title: "Selina Beige", description: "600×1200mm matt porcelain · RG50059", image: "/images/tile-04.jpg" },
+  { title: "Rainfall Nero", description: "600×1200mm matt porcelain · RG50007", image: "/images/tile-05.jpg" },
+  { title: "Marvel Speckle White", description: "600×1200mm matt porcelain · RG50050", image: "/images/tile-06.jpg" },
+  { title: "Veronda Charcoal", description: "600×1200mm matt porcelain · RG50068", image: "/images/tile-07.jpg" },
+  { title: "Stone Crete", description: "600×1200mm matt porcelain · RG50027", image: "/images/tile-08.jpg" },
+  { title: "Pebble White", description: "600×1200mm matt porcelain · RG50013", image: "/images/tile-09.jpg" },
+  { title: "Urban Beach", description: "600×1200mm matt porcelain · RG50045", image: "/images/tile-10.jpg" },
+  { title: "Willow Dark Oak", description: "600×1200mm matt porcelain · RG50138", image: "/images/tile-11.jpg" },
+  { title: "Karoo Taupe", description: "600×1200mm matt porcelain · RG50122", image: "/images/tile-12.jpg" },
+  { title: "Cloud White", description: "600×1200mm matt porcelain · RG50001", image: "/images/tile-13.jpg" },
+  { title: "Rainfall Grey", description: "600×1200mm matt porcelain · RG50005", image: "/images/tile-14.jpg" },
+  { title: "French Oak", description: "600×1200mm matt porcelain · RC59007", image: "/images/tile-15.jpg" },
+  { title: "French Oak Fishbone", description: "600×1200mm matt porcelain · RC59008", image: "/images/tile-16.jpg" },
+  { title: "Tundra Stone Ivory", description: "600×1200mm matt porcelain · RG50081", image: "/images/tile-17.jpg" },
+  { title: "Shell Dove", description: "600×1200mm matt porcelain · RG50033", image: "/images/tile-18.jpg" },
+  { title: "Urban Mocca", description: "600×1200mm matt porcelain · RG50046", image: "/images/tile-19.jpg" },
+  { title: "Screed Concreto", description: "600×1200mm matt porcelain · RG50054", image: "/images/tile-20.jpg" },
+  { title: "Polaris White", description: "600×1200mm matt porcelain · RG50029", image: "/images/tile-21.jpg" },
+  { title: "Glacier White", description: "600×1200mm matt porcelain · RG50031", image: "/images/tile-22.jpg" },
+  { title: "Tatum Grey", description: "600×1200mm matt porcelain · RG50035", image: "/images/tile-23.jpg" },
+  { title: "Baltic Grey", description: "600×1200mm matt porcelain · RG50051", image: "/images/tile-24.jpg" },
+  { title: "Carrara Veil", description: "600×1200mm matt porcelain · RC59003", image: "/images/tile-25.jpg" },
+  { title: "Armani Crystal", description: "600×1200mm matt porcelain · RG50020", image: "/images/tile-26.jpg" },
+  { title: "Tundra Stone Silver", description: "600×1200mm matt porcelain · RG50082", image: "/images/tile-27.jpg" },
+  { title: "Royal Stone Grey", description: "600×1200mm matt porcelain · RG50079", image: "/images/tile-28.jpg" },
+  { title: "Royal Stone Charcoal", description: "600×1200mm matt porcelain · RG50080", image: "/images/tile-29.jpg" },
+  { title: "Shell Grey", description: "600×1200mm matt porcelain · RG50032", image: "/images/tile-30.jpg" },
+  { title: "Misty Bone", description: "600×1200mm matt porcelain · RG50116", image: "/images/tile-31.jpg" },
+  { title: "White Marfil", description: "600×1200mm matt porcelain · RG50087", image: "/images/tile-32.jpg" },
+  { title: "Monaco Beige", description: "600×1200mm matt porcelain · RG50060", image: "/images/tile-33.jpg" },
+  { title: "Monaco Grey", description: "600×1200mm matt porcelain · RG50061", image: "/images/tile-34.jpg" },
+  { title: "Armani Platinum", description: "600×1200mm matt porcelain · RG50023", image: "/images/tile-35.jpg" },
+  { title: "Armani Silver", description: "600×1200mm matt porcelain · RG50021", image: "/images/tile-36.jpg" },
+  { title: "Rocky Dune", description: "600×1200mm matt porcelain · RC59001", image: "/images/tile-37.jpg" },
+  { title: "Screed Grey Concerta", description: "600×1200mm matt porcelain · RG50052", image: "/images/tile-38.jpg" },
+  { title: "Urban Honey", description: "600×1200mm matt porcelain · RG50048", image: "/images/tile-39.jpg" },
+  { title: "Fishbone Oak", description: "600×1200mm matt porcelain · RG50049", image: "/images/tile-40.jpg" },
+  { title: "Pebble Super White", description: "600×1200mm matt porcelain · RG50014", image: "/images/tile-41.jpg" },
 ];
 
 export const blogPosts = [
@@ -446,7 +451,7 @@ export const blogPosts = [
     title: "How many tiles do I need? A simple m² guide",
     excerpt:
       "Measure once, order with the right wastage allowance, and avoid mid-project shortages.",
-    image: "/images/hero-showroom.jpg",
+    image: "/images/tile-35.jpg",
     content: `Measuring for tiles is straightforward once you know the formula.
 
 1. Measure the length and width of each room in metres.
@@ -461,7 +466,7 @@ Use our free Tile Calculator to do the maths in seconds, then request a quote wi
     title: "Porcelain vs ceramic: which tile is right for you?",
     excerpt:
       "Porcelain wins for wet areas and outdoors. Ceramic shines on walls and lighter-traffic floors.",
-    image: "/images/porcelain-grey.jpg",
+    image: "/images/tile-02.jpg",
     content: `Porcelain is denser and less porous than ceramic, so it handles bathrooms, kitchens and outdoor spaces with ease. Ceramic is often more affordable and works beautifully on indoor walls and lower-traffic floors.
 
 If you are unsure, visit our Pretoria East showroom — our consultants will match the right body, finish and size to your project and budget.`,
@@ -471,7 +476,7 @@ If you are unsure, visit our Pretoria East showroom — our consultants will mat
     title: "Choosing outdoor tiles for Gauteng weather",
     excerpt:
       "Look for textured grip, UV-stable colour and frost resistance for patios and pool surrounds.",
-    image: "/images/outdoor-patio.jpg",
+    image: "/images/tile-12.jpg",
     content: `Gauteng summers are harsh on outdoor surfaces. Choose porcelain outdoor tiles with a textured or anti-slip finish (R11 or better for pool edges), and avoid polished surfaces outside.
 
 Our Karoo Sandstone and Lagoon Pool Edge ranges are stocked specifically for local patio and pool projects.`,

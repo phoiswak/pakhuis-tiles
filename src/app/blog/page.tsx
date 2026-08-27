@@ -28,7 +28,7 @@ export default async function BlogPage() {
           >
             <div className="relative aspect-[16/10]">
               <Image
-                src={post.image || "/images/hero-showroom.jpg"}
+                src={post.image || "/images/tile-35.jpg"}
                 alt={post.title}
                 fill
                 className="object-cover transition duration-500 group-hover:scale-[1.03]"

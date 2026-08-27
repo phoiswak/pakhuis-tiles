@@ -1,6 +1,5 @@
 /**
- * Inserts catalogue photos/products if the database is empty.
- * Does not delete quotes, orders, or users.
+ * Upserts catalogue products and photos without wiping quotes, orders, or users.
  */
 import { PrismaClient } from "@prisma/client";
 import {
@@ -13,16 +12,15 @@ import {
 const prisma = new PrismaClient();
 
 async function main() {
-  const existing = await prisma.product.count();
-  if (existing > 0) {
-    console.log(`Catalogue already has ${existing} products — leaving it unchanged.`);
-    return;
-  }
-
   for (const [index, cat] of catalogCategories.entries()) {
     await prisma.category.upsert({
       where: { slug: cat.slug },
-      update: {},
+      update: {
+        name: cat.name,
+        description: cat.description,
+        image: cat.image,
+        sortOrder: index,
+      },
       create: {
         slug: cat.slug,
         name: cat.name,
@@ -42,7 +40,7 @@ async function main() {
 
     await prisma.product.upsert({
       where: { slug: p.slug },
-      update: {},
+      update: { image: p.image, name: p.name, description: p.description },
       create: {
         slug: p.slug,
         sku: p.sku,
@@ -65,7 +63,8 @@ async function main() {
     });
   }
 
-  if ((await prisma.galleryItem.count()) === 0) {
+  const existingGallery = await prisma.galleryItem.findMany({ orderBy: { sortOrder: "asc" } });
+  if (existingGallery.length === 0) {
     for (const [index, item] of galleryItems.entries()) {
       await prisma.galleryItem.create({
         data: {
@@ -77,25 +76,32 @@ async function main() {
         },
       });
     }
-  }
-
-  if ((await prisma.blogPost.count()) === 0) {
-    for (const post of blogPosts) {
-      await prisma.blogPost.upsert({
-        where: { slug: post.slug },
-        update: {},
-        create: {
-          slug: post.slug,
-          title: post.title,
-          excerpt: post.excerpt,
-          content: post.content,
-          image: post.image,
-        },
+  } else {
+    for (const [index, item] of galleryItems.entries()) {
+      const row = existingGallery[index];
+      if (!row) continue;
+      await prisma.galleryItem.update({
+        where: { id: row.id },
+        data: { image: item.image, title: item.title, description: item.description },
       });
     }
   }
 
-  console.log("Catalogue photos and products are in the database.");
+  for (const post of blogPosts) {
+    await prisma.blogPost.upsert({
+      where: { slug: post.slug },
+      update: { image: post.image, title: post.title, excerpt: post.excerpt, content: post.content },
+      create: {
+        slug: post.slug,
+        title: post.title,
+        excerpt: post.excerpt,
+        content: post.content,
+        image: post.image,
+      },
+    });
+  }
+
+  console.log("Catalogue photos are synced from your images folder.");
 }
 
 main()

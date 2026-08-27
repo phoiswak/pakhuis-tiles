@@ -149,7 +149,7 @@ export default async function HomePage() {
             </div>
             <div className="relative min-h-[280px]">
               <Image
-                src="/images/outdoor-patio.jpg"
+                src="/images/tile-12.jpg"
                 alt="Outdoor patio tiles"
                 fill
                 className="object-cover"

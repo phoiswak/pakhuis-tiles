@@ -27,7 +27,7 @@ export default async function BlogPostPage({ params }: Props) {
       <p className="mt-4 text-lg text-ink-muted">{post.excerpt}</p>
       <div className="relative mt-8 aspect-[16/9] overflow-hidden border border-stone-line">
         <Image
-          src={post.image || "/images/hero-showroom.jpg"}
+          src={post.image || "/images/tile-35.jpg"}
           alt={post.title}
           fill
           className="object-cover"
