@@ -216,7 +216,7 @@ export async function getGalleryItems() {
     title: item.title,
     description: item.description,
     image: resolveTileSrc(item.image),
-    location: item.location ?? null,
+    location: "location" in item ? (item as { location?: string }).location ?? null : null,
     sortOrder,
     createdAt: new Date(0),
   }));
