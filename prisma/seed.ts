@@ -237,7 +237,7 @@ async function main() {
         title: item.title,
         description: item.description,
         image: item.image,
-        location: item.location,
+        location: "location" in item ? (item as { location?: string }).location : null,
         sortOrder: index,
       },
     });
