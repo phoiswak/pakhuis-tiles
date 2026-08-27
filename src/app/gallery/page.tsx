@@ -2,6 +2,8 @@ import Image from "next/image";
 import { getGalleryItems } from "@/lib/catalog";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Tile Gallery",
   description: "Browse the full range of tiles in stock at Pakhuis Tiles, Pretoria East.",

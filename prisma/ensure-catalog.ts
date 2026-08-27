@@ -106,8 +106,7 @@ async function main() {
 
 main()
   .catch((e) => {
-    console.error(e);
-    process.exit(1);
+    console.error("Catalogue seed skipped; storefront will use bundled photos.", e);
   })
   .finally(async () => {
     await prisma.$disconnect();

@@ -2,6 +2,8 @@ import { QuoteForm } from "@/components/QuoteForm";
 import { getCategories, getCategory, getProduct } from "@/lib/catalog";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Request a Quotation",
   description: "Request a free, no-obligation tile quotation from Pakhuis Tiles Pretoria East.",

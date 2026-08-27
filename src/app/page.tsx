@@ -7,6 +7,8 @@ import { SITE, testimonials } from "@/data/catalog";
 import { getCategories, getFeaturedProducts } from "@/lib/catalog";
 import { Calculator, MapPin, Truck } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const [categories, featuredAll] = await Promise.all([
     getCategories(),

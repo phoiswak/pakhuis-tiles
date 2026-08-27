@@ -4,6 +4,8 @@ import { SearchBar } from "@/components/SearchBar";
 import { getCategories, searchProducts } from "@/lib/catalog";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   searchParams: Promise<{ q?: string }>;
 };

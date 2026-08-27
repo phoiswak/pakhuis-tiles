@@ -4,6 +4,8 @@ import { SearchBar } from "@/components/SearchBar";
 import { getCategories, getProducts } from "@/lib/catalog";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Shop Tiles",
   description: "Browse floor, wall, outdoor, commercial and luxury tiles from Pakhuis Tiles.",
