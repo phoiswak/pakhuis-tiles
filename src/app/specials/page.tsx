@@ -1,5 +1,5 @@
 import { ProductCard } from "@/components/ProductCard";
-import { getSpecials } from "@/data/catalog";
+import { getSpecials } from "@/lib/catalog";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,8 +7,8 @@ export const metadata: Metadata = {
   description: "Monthly specials and promotional tile pricing from Pakhuis Tiles.",
 };
 
-export default function SpecialsPage() {
-  const specials = getSpecials();
+export default async function SpecialsPage() {
+  const specials = await getSpecials();
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">
@@ -23,6 +23,9 @@ export default function SpecialsPage() {
           <ProductCard key={product.slug} product={product} />
         ))}
       </div>
+      {specials.length === 0 && (
+        <p className="mt-8 text-ink-muted">There are no specials at the moment. Check back soon.</p>
+      )}
     </div>
   );
 }

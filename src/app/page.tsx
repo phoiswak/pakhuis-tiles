@@ -3,11 +3,16 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { ProductCard } from "@/components/ProductCard";
 import { Reveal } from "@/components/Reveal";
-import { categories, getFeaturedProducts, SITE, testimonials } from "@/data/catalog";
+import { SITE, testimonials } from "@/data/catalog";
+import { getCategories, getFeaturedProducts } from "@/lib/catalog";
 import { Calculator, MapPin, Truck } from "lucide-react";
 
-export default function HomePage() {
-  const featured = getFeaturedProducts().slice(0, 8);
+export default async function HomePage() {
+  const [categories, featuredAll] = await Promise.all([
+    getCategories(),
+    getFeaturedProducts(),
+  ]);
+  const featured = featuredAll.slice(0, 8);
 
   return (
     <>

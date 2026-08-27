@@ -1,5 +1,5 @@
 import { QuoteForm } from "@/components/QuoteForm";
-import { getCategory, getProduct } from "@/data/catalog";
+import { getCategories, getCategory, getProduct } from "@/lib/catalog";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -17,8 +17,11 @@ type Props = {
 
 export default async function QuotePage({ searchParams }: Props) {
   const params = await searchParams;
-  const product = params.product ? getProduct(params.product) : undefined;
-  const category = params.category ? getCategory(params.category) : undefined;
+  const [product, category, categories] = await Promise.all([
+    params.product ? getProduct(params.product) : Promise.resolve(null),
+    params.category ? getCategory(params.category) : Promise.resolve(null),
+    getCategories(),
+  ]);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 md:px-6 md:py-16">
@@ -38,6 +41,7 @@ export default async function QuotePage({ searchParams }: Props) {
           defaultCategory={category?.name}
           defaultQuantity={params.quantity}
           productSlug={product?.slug}
+          categories={categories}
         />
       </div>
     </div>

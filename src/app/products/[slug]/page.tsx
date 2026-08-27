@@ -2,40 +2,32 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/ProductCard";
-import {
-  effectivePrice,
-  getCategory,
-  getProduct,
-  getProductsByCategory,
-  products,
-} from "@/data/catalog";
+import { getCategory, getProduct, getProductsByCategory } from "@/lib/catalog";
+import { effectivePrice } from "@/data/catalog";
 import { formatZar } from "@/lib/utils";
 import type { Metadata } from "next";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProduct(slug);
+  const product = await getProduct(slug);
   if (!product) return { title: "Product" };
   return { title: product.name, description: product.description };
 }
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
-  const product = getProduct(slug);
+  const product = await getProduct(slug);
   if (!product) notFound();
 
-  const category = getCategory(product.categorySlug);
+  const [category, relatedAll] = await Promise.all([
+    getCategory(product.categorySlug),
+    getProductsByCategory(product.categorySlug),
+  ]);
   const price = effectivePrice(product);
   const onPromo = product.promoPricePerM2 != null;
-  const relatedCatalog = getProductsByCategory(product.categorySlug)
-    .filter((p) => p.slug !== product.slug)
-    .slice(0, 3);
+  const relatedCatalog = relatedAll.filter((p) => p.slug !== product.slug).slice(0, 3);
 
   const stockLabel =
     product.stockStatus === "IN_STOCK"

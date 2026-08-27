@@ -9,13 +9,13 @@ import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const links = [
+  { href: "/about", label: "About" },
   { href: "/tiles", label: "Shop Tiles" },
   { href: "/specials", label: "Specials" },
-  { href: "/calculator", label: "Calculator" },
   { href: "/gallery", label: "Gallery" },
-  { href: "/blog", label: "Blog" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/blog", label: "News" },
+  { href: "/calculator", label: "Calculator" },
+  { href: "/contact", label: "Contacts" },
 ];
 
 const staffRoles = new Set([
@@ -51,25 +51,31 @@ export function Header() {
             className="h-11 w-11 rounded-sm object-cover"
             priority
           />
-          <span className="font-display text-lg tracking-[0.14em] text-ink uppercase">
+          <span className="hidden font-display text-lg tracking-[0.14em] text-ink uppercase xl:inline">
             Pakhuis Tiles
           </span>
         </Link>
 
-        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-4 xl:gap-5 lg:flex">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "shrink-0 text-sm tracking-wide text-ink-muted transition hover:text-ink",
-                pathname === link.href || pathname.startsWith(`${link.href}/`)
-                  ? "text-ink font-medium"
-                  : "",
+        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-2 text-sm tracking-wide lg:flex xl:gap-3">
+          {links.map((link, index) => (
+            <span key={link.href} className="flex items-center gap-2 xl:gap-3">
+              {index > 0 && (
+                <span className="select-none text-stone-line" aria-hidden>
+                  |
+                </span>
               )}
-            >
-              {link.label}
-            </Link>
+              <Link
+                href={link.href}
+                className={cn(
+                  "shrink-0 whitespace-nowrap text-ink-muted transition hover:text-ink",
+                  pathname === link.href || pathname.startsWith(`${link.href}/`)
+                    ? "text-ink font-medium"
+                    : "",
+                )}
+              >
+                {link.label}
+              </Link>
+            </span>
           ))}
         </nav>
 

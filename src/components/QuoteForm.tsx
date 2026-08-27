@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SITE, categories } from "@/data/catalog";
+import { SITE } from "@/data/catalog";
 
 const projectTypes = [
   "Residential Project",
@@ -23,9 +23,15 @@ type Props = {
   defaultCategory?: string;
   defaultQuantity?: string;
   productSlug?: string;
+  categories?: { slug: string; name: string }[];
 };
 
-export function QuoteForm({ defaultCategory, defaultQuantity, productSlug }: Props) {
+export function QuoteForm({
+  defaultCategory,
+  defaultQuantity,
+  productSlug,
+  categories = [],
+}: Props) {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [error, setError] = useState("");
 

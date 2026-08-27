@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/ProductCard";
 import { SearchBar } from "@/components/SearchBar";
-import { categories, searchProducts } from "@/data/catalog";
+import { getCategories, searchProducts } from "@/lib/catalog";
 import type { Metadata } from "next";
 
 type Props = {
@@ -20,7 +20,10 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 export default async function SearchPage({ searchParams }: Props) {
   const { q } = await searchParams;
   const query = q?.trim() || "";
-  const results = query ? searchProducts(query) : [];
+  const [categories, results] = await Promise.all([
+    getCategories(),
+    query ? searchProducts(query) : Promise.resolve([]),
+  ]);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">

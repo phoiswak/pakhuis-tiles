@@ -5,16 +5,19 @@ Full e-commerce & stock management platform for **Pakhuis Tiles** (Pretoria East
 ## Stack
 
 - Next.js 16 (App Router) + TypeScript + Tailwind CSS 4
-- Prisma 5 + SQLite (swap `DATABASE_URL` to PostgreSQL for production)
+- Prisma 5 + PostgreSQL (pgAdmin)
 - NextAuth credentials (customers + staff roles)
 
 ## Quick start
 
 ```bash
 npm install
+copy .env.example .env
 npm run db:setup
 npm run dev
 ```
+
+Create the `pakhuis_tiles` database in pgAdmin first, then set `DATABASE_URL` in `.env`. `db:setup` pushes the schema and seeds products, categories, gallery, blog posts, and demo logins.
 
 Open [http://localhost:3000](http://localhost:3000).
 
@@ -65,6 +68,6 @@ Also seeded: store manager, sales, warehouse, finance (same password).
 ## Production notes
 
 - Set strong `NEXTAUTH_SECRET` and real `NEXTAUTH_URL`
-- Use PostgreSQL in production (`DATABASE_URL`)
+- `DATABASE_URL` should point at PostgreSQL, e.g. `postgresql://postgres:PASSWORD@localhost:5432/pakhuis_tiles?schema=public`
 - Wire PayFast credentials for live card payments (demo checkout records orders + invoices today)
 - Optional: email/SMS notifications via Resend / Twilio

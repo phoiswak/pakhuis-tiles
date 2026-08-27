@@ -26,7 +26,7 @@ Or ZIP the project (without `node_modules` / `.next`) and upload via File Manage
 ## 3. Environment variables (in Node.js App → Environment)
 ```
 NODE_ENV=production
-DATABASE_URL=file:./prisma/dev.db
+DATABASE_URL=file:./dev.db
 NEXTAUTH_URL=https://pakhuis.co.za
 NEXTAUTH_SECRET=<long-random-string>
 QUOTE_TO_EMAIL=sales@pakhuis.co.za

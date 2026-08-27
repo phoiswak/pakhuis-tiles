@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { effectivePrice, products } from "@/data/catalog";
+import type { Product } from "@/data/catalog";
+import { effectivePrice } from "@/data/catalog";
 import { formatZar } from "@/lib/utils";
 
-export function TileCalculator() {
+export function TileCalculator({ products }: { products: Product[] }) {
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
   const [wastage, setWastage] = useState(10);

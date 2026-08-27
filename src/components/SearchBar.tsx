@@ -36,15 +36,19 @@ export function SearchBar({
   }
 
   return (
-    <form onSubmit={onSubmit} className={cn("relative", className)} role="search">
+    <form
+      onSubmit={onSubmit}
+      className={cn(
+        "flex h-12 items-center gap-3 border border-stone-line bg-white px-4 transition",
+        "focus-within:border-moss focus-within:shadow-[0_0_0_3px_rgba(61,90,76,0.12)]",
+        className,
+      )}
+      role="search"
+    >
       <label htmlFor={id} className="sr-only">
         Search tiles
       </label>
-      <Search
-        size={16}
-        className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-ink-muted"
-        aria-hidden
-      />
+      <Search size={18} strokeWidth={1.8} className="shrink-0 text-ink-muted" aria-hidden />
       <input
         id={id}
         type="search"
@@ -53,7 +57,9 @@ export function SearchBar({
         placeholder={placeholder}
         autoFocus={autoFocus}
         className={cn(
-          "field h-10 w-full border-stone-line bg-white py-2 pr-3 pl-9 text-sm leading-none",
+          "h-full min-w-0 flex-1 border-0 bg-transparent p-0 text-sm leading-normal text-ink outline-none",
+          "placeholder:text-ink-muted/80",
+          "[appearance:textfield] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden",
           inputClassName,
         )}
       />

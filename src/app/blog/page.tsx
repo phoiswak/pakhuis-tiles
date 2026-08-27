@@ -1,18 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import { blogPosts } from "@/data/catalog";
+import { getBlogPosts } from "@/lib/catalog";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Blog & Resources",
+  title: "News",
   description: "Guides on measuring tiles, porcelain vs ceramic, and outdoor tiling in Gauteng.",
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const blogPosts = await getBlogPosts();
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">
-      <p className="section-kicker">Resources</p>
-      <h1 className="mt-2 font-display text-4xl text-ink md:text-5xl">Blog & Resources</h1>
+      <p className="section-kicker">News</p>
+      <h1 className="mt-2 font-display text-4xl text-ink md:text-5xl">News</h1>
       <p className="mt-4 max-w-2xl text-ink-muted">
         Practical advice from our showroom team to help you plan, measure and choose the right
         tiles.

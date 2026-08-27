@@ -1,27 +1,26 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/ProductCard";
-import { categories, getCategory, getProductsByCategory } from "@/data/catalog";
+import { getCategories, getCategory, getProductsByCategory } from "@/lib/catalog";
 import type { Metadata } from "next";
 
 type Props = { params: Promise<{ category: string }> };
 
-export async function generateStaticParams() {
-  return categories.map((c) => ({ category: c.slug }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
-  const cat = getCategory(category);
+  const cat = await getCategory(category);
   if (!cat) return { title: "Category" };
   return { title: cat.name, description: cat.description };
 }
 
 export default async function CategoryPage({ params }: Props) {
   const { category } = await params;
-  const cat = getCategory(category);
+  const [cat, items, categories] = await Promise.all([
+    getCategory(category),
+    getProductsByCategory(category),
+    getCategories(),
+  ]);
   if (!cat) notFound();
-  const items = getProductsByCategory(category);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">

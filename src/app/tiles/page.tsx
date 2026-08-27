@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/ProductCard";
 import { SearchBar } from "@/components/SearchBar";
-import { categories, products } from "@/data/catalog";
+import { getCategories, getProducts } from "@/lib/catalog";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,7 +9,9 @@ export const metadata: Metadata = {
   description: "Browse floor, wall, outdoor, commercial and luxury tiles from Pakhuis Tiles.",
 };
 
-export default function TilesPage() {
+export default async function TilesPage() {
+  const [categories, products] = await Promise.all([getCategories(), getProducts()]);
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">
       <p className="section-kicker">Catalogue</p>
@@ -43,6 +45,11 @@ export default function TilesPage() {
           <ProductCard key={product.slug} product={product} />
         ))}
       </div>
+      {products.length === 0 && (
+        <p className="mt-8 text-ink-muted">
+          No tiles in the catalogue yet. Run <code>npm run db:setup</code> to seed the database.
+        </p>
+      )}
     </div>
   );
 }

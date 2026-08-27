@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { galleryItems } from "@/data/catalog";
+import { getGalleryItems } from "@/lib/catalog";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,7 +7,9 @@ export const metadata: Metadata = {
   description: "Completed residential and commercial tile projects by Pakhuis Tiles customers.",
 };
 
-export default function GalleryPage() {
+export default async function GalleryPage() {
+  const galleryItems = await getGalleryItems();
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">
       <p className="section-kicker">Inspiration</p>

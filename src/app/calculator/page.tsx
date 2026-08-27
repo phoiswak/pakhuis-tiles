@@ -1,4 +1,5 @@
 import { TileCalculator } from "@/components/TileCalculator";
+import { getProducts } from "@/lib/catalog";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,7 +8,9 @@ export const metadata: Metadata = {
     "Calculate how many square metres of tiles you need, including wastage, and estimate cost.",
 };
 
-export default function CalculatorPage() {
+export default async function CalculatorPage() {
+  const products = await getProducts();
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">
       <p className="section-kicker">Plan smart</p>
@@ -17,7 +20,7 @@ export default function CalculatorPage() {
         — including the recommended extra for cuts and breakages.
       </p>
       <div className="mt-10">
-        <TileCalculator />
+        <TileCalculator products={products} />
       </div>
     </div>
   );

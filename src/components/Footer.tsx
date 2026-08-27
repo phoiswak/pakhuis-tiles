@@ -35,28 +35,38 @@ export function Footer() {
           <h3 className="font-display text-sm tracking-[0.16em] text-brass uppercase">Explore</h3>
           <ul className="mt-4 space-y-2 text-sm text-stone-muted">
             <li>
+              <Link href="/about" className="hover:text-stone-soft">
+                About
+              </Link>
+            </li>
+            <li>
               <Link href="/tiles" className="hover:text-stone-soft">
                 Shop Tiles
               </Link>
             </li>
             <li>
               <Link href="/specials" className="hover:text-stone-soft">
-                Specials & Promotions
-              </Link>
-            </li>
-            <li>
-              <Link href="/calculator" className="hover:text-stone-soft">
-                Tile Calculator
+                Specials
               </Link>
             </li>
             <li>
               <Link href="/gallery" className="hover:text-stone-soft">
-                Project Gallery
+                Gallery
               </Link>
             </li>
             <li>
               <Link href="/blog" className="hover:text-stone-soft">
-                Blog & Resources
+                News
+              </Link>
+            </li>
+            <li>
+              <Link href="/calculator" className="hover:text-stone-soft">
+                Calculator
+              </Link>
+            </li>
+            <li>
+              <Link href="/contact" className="hover:text-stone-soft">
+                Contacts
               </Link>
             </li>
             <li>
