@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getBlogPosts } from "@/lib/catalog";
+import { getBlogPosts, resolveTileSrc } from "@/lib/catalog";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +30,7 @@ export default async function BlogPage() {
           >
             <div className="relative aspect-[16/10]">
               <Image
-                src={post.image || "/images/tile-35.jpg"}
+                src={post.image || resolveTileSrc("/images/tile-35.jpg")}
                 alt={post.title}
                 fill
                 className="object-cover transition duration-500 group-hover:scale-[1.03]"

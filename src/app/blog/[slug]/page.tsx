@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getBlogPost } from "@/lib/catalog";
+import { getBlogPost, resolveTileSrc } from "@/lib/catalog";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -29,7 +29,7 @@ export default async function BlogPostPage({ params }: Props) {
       <p className="mt-4 text-lg text-ink-muted">{post.excerpt}</p>
       <div className="relative mt-8 aspect-[16/9] overflow-hidden border border-stone-line">
         <Image
-          src={post.image || "/images/tile-35.jpg"}
+          src={post.image || resolveTileSrc("/images/tile-35.jpg")}
           alt={post.title}
           fill
           className="object-cover"

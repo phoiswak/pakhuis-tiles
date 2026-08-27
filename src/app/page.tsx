@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { ProductCard } from "@/components/ProductCard";
 import { Reveal } from "@/components/Reveal";
 import { SITE, testimonials } from "@/data/catalog";
-import { getCategories, getFeaturedProducts } from "@/lib/catalog";
+import { getCategories, getFeaturedProducts, resolveTileSrc } from "@/lib/catalog";
 import { Calculator, MapPin, Truck } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -151,7 +151,7 @@ export default async function HomePage() {
             </div>
             <div className="relative min-h-[280px]">
               <Image
-                src="/images/tile-12.jpg"
+                src={resolveTileSrc("/images/tile-12.jpg")}
                 alt="Outdoor patio tiles"
                 fill
                 className="object-cover"

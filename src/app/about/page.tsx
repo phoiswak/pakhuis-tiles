@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { SITE } from "@/data/catalog";
+import { resolveTileSrc } from "@/lib/catalog";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -42,7 +43,7 @@ export default function AboutPage() {
         </div>
         <div className="relative min-h-[360px] overflow-hidden border border-stone-line">
           <Image
-            src="/images/tile-38.jpg"
+            src={resolveTileSrc("/images/tile-38.jpg")}
             alt="Pakhuis Tiles showroom"
             fill
             className="object-cover"

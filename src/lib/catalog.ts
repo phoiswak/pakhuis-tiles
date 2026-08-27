@@ -7,8 +7,10 @@ import {
 } from "@/data/catalog";
 import { prisma } from "@/lib/prisma";
 import { stockLabel } from "@/lib/pricing";
+import { resolveTileSrc } from "@/lib/tile-src";
 
 export type { Category, Product, StockStatus };
+export { resolveTileSrc };
 
 type ProductRow = {
   slug: string;
@@ -34,7 +36,7 @@ function mapProduct(p: ProductRow): Product {
     sku: p.sku,
     name: p.name,
     description: p.description,
-    image: p.image,
+    image: resolveTileSrc(p.image),
     sizeMm: p.sizeMm,
     finish: p.finish ?? "",
     material: p.material ?? "",
@@ -45,6 +47,14 @@ function mapProduct(p: ProductRow): Product {
     isSpecial: p.isSpecial,
     categorySlug: p.category.slug,
   };
+}
+
+function resolveProduct(product: Product): Product {
+  return { ...product, image: resolveTileSrc(product.image) };
+}
+
+function resolveCategory(category: Category): Category {
+  return { ...category, image: resolveTileSrc(category.image) };
 }
 
 const productInclude = { category: { select: { slug: true } } } as const;
@@ -60,18 +70,18 @@ export async function getCategories(): Promise<Category[]> {
       include: { _count: { select: { products: { where: { active: true } } } } },
     });
 
-    if (rows.length === 0) return catalogCategories;
+    if (rows.length === 0) return catalogCategories.map(resolveCategory);
 
     return rows.map((c) => ({
       slug: c.slug,
       name: c.name,
       description: c.description ?? "",
-      image: c.image ?? "",
+      image: resolveTileSrc(c.image ?? ""),
       collectionCount: c._count.products,
     }));
   } catch (error) {
     logCatalogFallback("getCategories", error);
-    return catalogCategories;
+    return catalogCategories.map(resolveCategory);
   }
 }
 
@@ -86,7 +96,7 @@ export async function getCategory(slug: string): Promise<Category | null> {
         slug: c.slug,
         name: c.name,
         description: c.description ?? "",
-        image: c.image ?? "",
+        image: resolveTileSrc(c.image ?? ""),
         collectionCount: c._count.products,
       };
     }
@@ -94,7 +104,8 @@ export async function getCategory(slug: string): Promise<Category | null> {
     logCatalogFallback("getCategory", error);
   }
 
-  return catalogCategories.find((category) => category.slug === slug) ?? null;
+  const fallback = catalogCategories.find((category) => category.slug === slug);
+  return fallback ? resolveCategory(fallback) : null;
 }
 
 export async function getProducts(): Promise<Product[]> {
@@ -108,7 +119,7 @@ export async function getProducts(): Promise<Product[]> {
   } catch (error) {
     logCatalogFallback("getProducts", error);
   }
-  return catalogProducts;
+  return catalogProducts.map(resolveProduct);
 }
 
 export async function getProduct(slug: string): Promise<Product | null> {
@@ -121,7 +132,8 @@ export async function getProduct(slug: string): Promise<Product | null> {
   } catch (error) {
     logCatalogFallback("getProduct", error);
   }
-  return catalogProducts.find((product) => product.slug === slug) ?? null;
+  const fallback = catalogProducts.find((product) => product.slug === slug);
+  return fallback ? resolveProduct(fallback) : null;
 }
 
 export async function getProductsByCategory(slug: string): Promise<Product[]> {
@@ -135,7 +147,7 @@ export async function getProductsByCategory(slug: string): Promise<Product[]> {
   } catch (error) {
     logCatalogFallback("getProductsByCategory", error);
   }
-  return catalogProducts.filter((product) => product.categorySlug === slug);
+  return catalogProducts.filter((product) => product.categorySlug === slug).map(resolveProduct);
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
@@ -149,7 +161,7 @@ export async function getFeaturedProducts(): Promise<Product[]> {
   } catch (error) {
     logCatalogFallback("getFeaturedProducts", error);
   }
-  return catalogProducts.filter((product) => product.isFeatured);
+  return catalogProducts.filter((product) => product.isFeatured).map(resolveProduct);
 }
 
 export async function getSpecials(): Promise<Product[]> {
@@ -166,9 +178,9 @@ export async function getSpecials(): Promise<Product[]> {
   } catch (error) {
     logCatalogFallback("getSpecials", error);
   }
-  return catalogProducts.filter(
-    (product) => product.isSpecial || product.promoPricePerM2 != null,
-  );
+  return catalogProducts
+    .filter((product) => product.isSpecial || product.promoPricePerM2 != null)
+    .map(resolveProduct);
 }
 
 export async function searchProducts(query: string): Promise<Product[]> {
@@ -203,7 +215,7 @@ export async function getGalleryItems() {
     id: item.image,
     title: item.title,
     description: item.description,
-    image: item.image,
+    image: resolveTileSrc(item.image),
     location: item.location ?? null,
     sortOrder,
     createdAt: new Date(0),
@@ -213,7 +225,9 @@ export async function getGalleryItems() {
 export async function getBlogPosts() {
   try {
     const rows = await prisma.blogPost.findMany({ orderBy: { publishedAt: "desc" } });
-    if (rows.length > 0) return rows;
+    if (rows.length > 0) {
+      return rows.map((post) => ({ ...post, image: resolveTileSrc(post.image) }));
+    }
   } catch (error) {
     logCatalogFallback("getBlogPosts", error);
   }
@@ -224,7 +238,7 @@ export async function getBlogPosts() {
     title: post.title,
     excerpt: post.excerpt,
     content: post.content,
-    image: post.image,
+    image: resolveTileSrc(post.image),
     publishedAt: new Date(0),
   }));
 }
@@ -232,7 +246,7 @@ export async function getBlogPosts() {
 export async function getBlogPost(slug: string) {
   try {
     const post = await prisma.blogPost.findUnique({ where: { slug } });
-    if (post) return post;
+    if (post) return { ...post, image: resolveTileSrc(post.image) };
   } catch (error) {
     logCatalogFallback("getBlogPost", error);
   }
@@ -246,7 +260,7 @@ export async function getBlogPost(slug: string) {
     title: fallback.title,
     excerpt: fallback.excerpt,
     content: fallback.content,
-    image: fallback.image,
+    image: resolveTileSrc(fallback.image),
     publishedAt: new Date(0),
   };
 }
