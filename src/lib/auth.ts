@@ -12,8 +12,13 @@ const STAFF_ROLES = new Set([
   "FINANCE",
 ]);
 
+/** Staff sessions expire one hour after login. Customer sessions last 30 days. */
+const STAFF_SESSION_SECONDS = 60 * 60;
+const CUSTOMER_SESSION_SECONDS = 30 * 24 * 60 * 60;
+
 export const authOptions: NextAuthOptions = {
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: CUSTOMER_SESSION_SECONDS },
+  jwt: { maxAge: CUSTOMER_SESSION_SECONDS },
   pages: {
     signIn: "/login",
   },
@@ -57,16 +62,36 @@ export const authOptions: NextAuthOptions = {
         token.role = user.role;
         token.permissions = user.permissions;
         token.email = user.email;
+        if (isStaffRole(user.role)) {
+          token.staffLoginAt = Math.floor(Date.now() / 1000);
+        }
       }
+
+      if (isStaffRole(token.role)) {
+        const loginAt = token.staffLoginAt ?? token.iat ?? 0;
+        const now = Math.floor(Date.now() / 1000);
+        if (!loginAt || now - loginAt >= STAFF_SESSION_SECONDS) {
+          return {};
+        }
+        token.exp = loginAt + STAFF_SESSION_SECONDS;
+      }
+
       return token;
     },
     async session({ session, token }) {
+      if (!token.id) {
+        return {
+          ...session,
+          expires: new Date(0).toISOString(),
+        };
+      }
+
       session.user = {
-        id: token.id as string,
-        email: (token.email as string) || session.user?.email || "",
+        id: token.id,
+        email: token.email || session.user?.email || "",
         name: session.user?.name || "",
-        role: (token.role as string) || "CUSTOMER",
-        permissions: (token.permissions as string[]) || [],
+        role: token.role || "CUSTOMER",
+        permissions: token.permissions || [],
       };
       return session;
     },

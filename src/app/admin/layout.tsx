@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions, canAccessAdmin, isAdminRole } from "@/lib/auth";
+import { SignOutButton } from "@/components/SignOutButton";
 
 const nav = [
   { href: "/admin", label: "Dashboard" },
@@ -55,6 +56,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/" className="mt-3 inline-block text-brass hover:underline">
             ← Storefront
           </Link>
+          <SignOutButton className="mt-2 block text-left text-brass hover:underline" />
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { authOptions, isStaffRole } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatZar } from "@/lib/utils";
+import { SignOutButton } from "@/components/SignOutButton";
 
 export default async function AccountPage() {
   const session = await getServerSession(authOptions);
@@ -38,6 +39,7 @@ export default async function AccountPage() {
               Open admin
             </Link>
           )}
+          <SignOutButton className="btn-secondary" />
           <Link href="/tiles" className="btn-primary">
             Shop tiles
           </Link>
