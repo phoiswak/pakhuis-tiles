@@ -68,7 +68,7 @@ export const authOptions: NextAuthOptions = {
       }
 
       if (isStaffRole(token.role)) {
-        const loginAt = token.staffLoginAt ?? token.iat ?? 0;
+        const loginAt = Number(token.staffLoginAt ?? token.iat ?? 0) || 0;
         const now = Math.floor(Date.now() / 1000);
         if (!loginAt || now - loginAt >= STAFF_SESSION_SECONDS) {
           return {};
