@@ -10,7 +10,7 @@ const staffRoles = new Set([
 ]);
 
 export default withAuth(
-  function middleware(req) {
+  function proxy(req) {
     const role = req.nextauth.token?.role as string | undefined;
     const path = req.nextUrl.pathname;
 

@@ -28,6 +28,7 @@ export default async function GalleryPage() {
                 src={item.image}
                 alt={item.title}
                 fill
+                unoptimized
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 33vw"
               />
