@@ -5,9 +5,7 @@
  */
 export const SEED_ADMIN_EMAILS = [
   "admin@pakhuis.co.za",
-  "annemarie@pakhuis.co.za",
   "lincoln@pakhuis.co.za",
-  "portia@pakhuis.co.za",
 ] as const;
 
 /** @deprecated Use database roles; kept for any remaining imports */

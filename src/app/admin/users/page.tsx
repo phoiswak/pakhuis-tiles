@@ -1,14 +1,14 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { UserCreateForm } from "@/components/admin/UserCreateForm";
-import { authOptions, isAdminRole } from "@/lib/auth";
+import { authOptions, canManageUsers } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 const staffRoles = ["ADMIN", "STORE_MANAGER", "SALES", "WAREHOUSE", "FINANCE"];
 
 export default async function AdminUsersPage() {
   const session = await getServerSession(authOptions);
-  if (!isAdminRole(session?.user?.role)) {
+  if (!canManageUsers(session?.user?.role, session?.user?.email)) {
     redirect("/admin");
   }
 

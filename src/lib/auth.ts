@@ -120,9 +120,21 @@ export function isAdminRole(role?: string | null) {
   return role === "ADMIN";
 }
 
+const USER_MANAGEMENT_BLOCKED_EMAILS = new Set([
+  "portia@pakhuis.co.za",
+  "annemarie@pakhuis.co.za",
+]);
+
+/** Portia and Annemarie can use the admin portal, but cannot manage staff users. */
+export function canManageUsers(role?: string | null, email?: string | null) {
+  if (!isAdminRole(role)) return false;
+  const normalised = email?.toLowerCase().trim() ?? "";
+  return !USER_MANAGEMENT_BLOCKED_EMAILS.has(normalised);
+}
+
 export async function requireAdminSession() {
   const session = await getServerSession(authOptions);
-  if (!isAdminRole(session?.user?.role)) {
+  if (!canManageUsers(session?.user?.role, session?.user?.email)) {
     return null;
   }
   return session;
