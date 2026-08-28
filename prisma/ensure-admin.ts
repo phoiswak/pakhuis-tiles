@@ -1,17 +1,19 @@
 /**
- * Upserts Pakhuis admin users without wiping production data.
+ * Upserts Pakhuis staff without wiping production data.
  * Safe to run on every Vercel build.
+ *
+ * Portia and Annemarie can use the admin portal, but not Admin → Users.
  */
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-const ADMINS = [
-  { email: "admin@pakhuis.co.za", name: "Pakhuis Admin" },
-  { email: "annemarie@pakhuis.co.za", name: "Annemarie" },
-  { email: "lincoln@pakhuis.co.za", name: "Lincoln" },
-  { email: "portia@pakhuis.co.za", name: "Portia" },
+const STAFF = [
+  { email: "admin@pakhuis.co.za", name: "Pakhuis Admin", role: "ADMIN" },
+  { email: "lincoln@pakhuis.co.za", name: "Lincoln", role: "ADMIN" },
+  { email: "annemarie@pakhuis.co.za", name: "Annemarie", role: "STORE_MANAGER" },
+  { email: "portia@pakhuis.co.za", name: "Portia", role: "STORE_MANAGER" },
 ] as const;
 
 const DEMO_STAFF_TO_DISABLE = [
@@ -36,26 +38,26 @@ async function main() {
   const password = process.env.ADMIN_PASSWORD || "P@kHu1s@23205";
   const passwordHash = await bcrypt.hash(password, 10);
 
-  for (const admin of ADMINS) {
+  for (const member of STAFF) {
     await prisma.user.upsert({
-      where: { email: admin.email },
+      where: { email: member.email },
       update: {
         passwordHash,
-        name: admin.name,
-        role: "ADMIN",
+        name: member.name,
+        role: member.role,
         active: true,
         permissions,
       },
       create: {
-        email: admin.email,
+        email: member.email,
         passwordHash,
-        name: admin.name,
-        role: "ADMIN",
+        name: member.name,
+        role: member.role,
         active: true,
         permissions,
       },
     });
-    console.log(`Admin ready: ${admin.email}`);
+    console.log(`Staff ready: ${member.email} (${member.role})`);
   }
 
   // Prevent old demo staff accounts from reaching /admin

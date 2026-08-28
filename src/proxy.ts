@@ -19,8 +19,13 @@ export default withAuth(
       return NextResponse.redirect(new URL("/staff", req.url));
     }
 
-    // Only ADMIN can open the Users page (add people)
-    if (path.startsWith("/admin/users") && role !== "ADMIN") {
+    // Only Lincoln / Pakhuis Admin can open Users (not Portia or Annemarie)
+    const email = (req.nextauth.token?.email as string | undefined)?.toLowerCase().trim();
+    const canManageUsers =
+      role === "ADMIN" &&
+      email !== "portia@pakhuis.co.za" &&
+      email !== "annemarie@pakhuis.co.za";
+    if (path.startsWith("/admin/users") && !canManageUsers) {
       return NextResponse.redirect(new URL("/admin", req.url));
     }
 

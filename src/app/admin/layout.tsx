@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
-import { authOptions, canAccessAdmin, isAdminRole } from "@/lib/auth";
+import { authOptions, canAccessAdmin, canManageUsers } from "@/lib/auth";
 import { SignOutButton } from "@/components/SignOutButton";
 
 const nav = [
@@ -29,8 +29,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect("/login?callbackUrl=/admin");
   }
 
-  const showAdminOnly = isAdminRole(session.user.role);
-  const visibleNav = nav.filter((item) => !item.adminOnly || showAdminOnly);
+  const showUsersNav = canManageUsers(session.user.role, session.user.email);
+  const visibleNav = nav.filter((item) => !item.adminOnly || showUsersNav);
 
   return (
     <div className="flex min-h-screen bg-stone-canvas">
