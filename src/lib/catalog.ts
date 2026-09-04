@@ -5,6 +5,7 @@ import {
   galleryItems as catalogGalleryItems,
   products as catalogProducts,
 } from "@/data/catalog";
+import { isCampaignProduct, isMonthlySaleActive } from "@/data/monthly-sale";
 import { prisma } from "@/lib/prisma";
 import { resolveTileSrc } from "@/lib/tile-src";
 
@@ -12,7 +13,18 @@ export type { Category, Product, StockStatus };
 export { resolveTileSrc };
 
 function resolveProduct(product: Product): Product {
-  return { ...product, image: resolveTileSrc(product.image) };
+  const saleLive = isMonthlySaleActive();
+  return {
+    ...product,
+    image: resolveTileSrc(product.image),
+    isSpecial: product.isSpecial && saleLive,
+    promoPricePerM2: saleLive ? product.promoPricePerM2 : undefined,
+  };
+}
+
+function isVisibleProduct(product: Product): boolean {
+  if (!isCampaignProduct(product.sku)) return true;
+  return isMonthlySaleActive();
 }
 
 function resolveCategory(category: Category): Category {
@@ -33,23 +45,29 @@ export async function getCategory(slug: string): Promise<Category | null> {
 }
 
 export async function getProducts(): Promise<Product[]> {
-  return catalogProducts.map(resolveProduct);
+  return catalogProducts.filter(isVisibleProduct).map(resolveProduct);
 }
 
 export async function getProduct(slug: string): Promise<Product | null> {
   const fallback = catalogProducts.find((product) => product.slug === slug);
-  return fallback ? resolveProduct(fallback) : null;
+  if (!fallback || !isVisibleProduct(fallback)) return null;
+  return resolveProduct(fallback);
 }
 
 export async function getProductsByCategory(slug: string): Promise<Product[]> {
-  return catalogProducts.filter((product) => product.categorySlug === slug).map(resolveProduct);
+  return catalogProducts
+    .filter((product) => product.categorySlug === slug && isVisibleProduct(product))
+    .map(resolveProduct);
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
-  return catalogProducts.filter((product) => product.isFeatured).map(resolveProduct);
+  return catalogProducts
+    .filter((product) => product.isFeatured && isVisibleProduct(product))
+    .map(resolveProduct);
 }
 
 export async function getSpecials(): Promise<Product[]> {
+  if (!isMonthlySaleActive()) return [];
   return catalogProducts
     .filter((product) => product.isSpecial || product.promoPricePerM2 != null)
     .map(resolveProduct);

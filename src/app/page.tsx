@@ -1,9 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { HomeHero } from "@/components/HomeHero";
 import { ProductCard } from "@/components/ProductCard";
 import { Reveal } from "@/components/Reveal";
 import { SITE, testimonials } from "@/data/catalog";
+import { HERO_SALE_SLIDES, isMonthlySaleActive } from "@/data/monthly-sale";
 import { getCategories, getFeaturedProducts, resolveTileSrc } from "@/lib/catalog";
 import { Calculator, MapPin, Truck } from "lucide-react";
 
@@ -18,40 +20,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="relative min-h-[88vh] overflow-hidden">
-        <Image
-          src="/images/hero-showroom.jpg"
-          alt="Pakhuis Tiles showroom with premium tile displays"
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/55 to-ink/25" />
-        <div className="relative mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-4 pb-16 pt-28 md:px-6 md:pb-20">
-          <p className="hero-animate text-xs tracking-[0.28em] text-brass uppercase">
-            Tile Warehouse · Pretoria East
-          </p>
-          <h1 className="hero-animate-delay mt-4 max-w-3xl font-display text-4xl leading-[1.05] text-stone-soft sm:text-5xl md:text-6xl">
-            Pakhuis Tiles
-          </h1>
-          <p className="hero-animate-delay-2 mt-4 max-w-xl text-lg text-stone-muted">
-            {SITE.tagline}. Browse our full range, calculate exactly what you need, and get a
-            professional quotation.
-          </p>
-          <div className="hero-animate-delay-2 mt-8 flex flex-wrap gap-3">
-            <Link href="/quote" className="btn-primary">
-              Request a Quote
-            </Link>
-            <Link href="/tiles" className="btn-ghost-light">
-              Shop Tiles
-            </Link>
-            <Link href="/contact" className="btn-ghost-light">
-              Contact Us
-            </Link>
-          </div>
-        </div>
-      </section>
+      <HomeHero saleActive={isMonthlySaleActive()} slides={HERO_SALE_SLIDES} />
 
       <section className="border-b border-stone-line bg-white/70">
         <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 md:grid-cols-3 md:px-6">
