@@ -27,7 +27,7 @@ export default async function HomePage() {
           <Feature
             icon={<Truck size={18} />}
             title="Delivery across Gauteng"
-            text="Pretoria, Joburg, Midrand, Centurion & nationwide"
+            text="Pretoria, Joburg, Midrand and Centurion"
           />
           <Feature
             icon={<Calculator size={18} />}
