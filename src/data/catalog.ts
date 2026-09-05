@@ -32,7 +32,7 @@ export const SITE = {
   address: "Plot 10, Garsfontein Road, Pretoria East, Gauteng",
   phone: "068 455 7381",
   phoneHref: "tel:+27684557381",
-  whatsappNumber: "27684557381",
+  whatsappNumber: "27625279546",
   whatsappMessage: "Hi Pakhuis Tiles, I would like assistance with tiles and pricing.",
   email: "sales@pakhuis.co.za",
   hours: "Mon–Fri 08:00–17:00 · Sat 08:00–14:00",
