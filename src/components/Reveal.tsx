@@ -18,17 +18,28 @@ export function Reveal({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    const show = () => setVisible(true);
+    if (typeof IntersectionObserver === "undefined") {
+      show();
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setVisible(true);
+          show();
           observer.disconnect();
         }
       },
-      { threshold: 0.15 },
+      { threshold: 0.05, rootMargin: "0px 0px -8% 0px" },
     );
     observer.observe(el);
-    return () => observer.disconnect();
+    const fallback = window.setTimeout(show, 800);
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(fallback);
+    };
   }, []);
 
   return (
@@ -36,8 +47,8 @@ export function Reveal({
       ref={ref}
       style={{ transitionDelay: `${delay}ms` }}
       className={cn(
-        "translate-y-4 opacity-0 transition duration-700 ease-out",
-        visible && "translate-y-0 opacity-100",
+        "transition duration-700 ease-out",
+        visible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
         className,
       )}
     >

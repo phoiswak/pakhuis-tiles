@@ -28,9 +28,12 @@ export type Product = {
 export const SITE = {
   name: "Pakhuis Tiles",
   tagline: "Premium tiles for every floor, wall & outdoor space",
+  brandTagline: "Transforming spaces, one tile at a time.",
   address: "Plot 10, Garsfontein Road, Pretoria East, Gauteng",
-  phone: "+27 12 000 0000",
-  phoneHref: "tel:+27120000000",
+  phone: "068 455 7381",
+  phoneHref: "tel:+27684557381",
+  whatsappNumber: "27684557381",
+  whatsappMessage: "Hi Pakhuis Tiles, I would like assistance with tiles and pricing.",
   email: "sales@pakhuis.co.za",
   hours: "Mon–Fri 08:00–17:00 · Sat 08:00–14:00",
   deliveryAreas: [
@@ -42,6 +45,54 @@ export const SITE = {
     "Nationwide Delivery",
   ] as const,
 };
+
+export function whatsappHref(message = SITE.whatsappMessage) {
+  return `https://wa.me/${SITE.whatsappNumber}?text=${encodeURIComponent(message)}`;
+}
+
+export const WHATSAPP_TOPICS = [
+  {
+    id: "1",
+    label: "Request a Quote",
+    message:
+      "Hi Pakhuis Tiles, I would like to request a quote. Tile/product name: , Quantity or m²: , Delivery location: ",
+  },
+  {
+    id: "2",
+    label: "Tile Prices & Specials",
+    message:
+      "Hi Pakhuis Tiles, I would like to know about current tile prices and specials.",
+  },
+  {
+    id: "3",
+    label: "Product Availability",
+    message:
+      "Hi Pakhuis Tiles, I would like to check product availability. Product name: , Quantity: ",
+  },
+  {
+    id: "4",
+    label: "Delivery Enquiry",
+    message:
+      "Hi Pakhuis Tiles, I have a delivery enquiry. Suburb: , Order details: ",
+  },
+  {
+    id: "5",
+    label: "Visit Our Store",
+    message:
+      "Hi Pakhuis Tiles, I would like to visit the Pretoria East store. Please confirm the address and trading hours.",
+  },
+  {
+    id: "6",
+    label: "Installation Enquiry",
+    message:
+      "Hi Pakhuis Tiles, I have an installation enquiry. Area size: , Location: , Type of project: ",
+  },
+  {
+    id: "7",
+    label: "Speak to a Sales Consultant",
+    message: "Hi Pakhuis Tiles, I would like to speak to a sales consultant.",
+  },
+] as const;
 
 export const categories: Category[] = [
   {
