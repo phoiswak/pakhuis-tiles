@@ -1,5 +1,6 @@
 import { ContactForm } from "@/components/ContactForm";
-import { SITE } from "@/data/catalog";
+import { WhatsAppIcon, WhatsAppLink } from "@/components/WhatsAppLink";
+import { SITE, WHATSAPP_TOPICS } from "@/data/catalog";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -37,6 +38,32 @@ export default function ContactPage() {
               </li>
               <li>{SITE.hours}</li>
             </ul>
+            <WhatsAppLink className="btn-primary mt-6 w-full">
+              <WhatsAppIcon />
+              Chat on WhatsApp
+            </WhatsAppLink>
+          </div>
+          <div className="border border-stone-line bg-white p-6 md:p-8">
+            <h2 className="font-display text-2xl text-ink">WhatsApp assistance</h2>
+            <p className="mt-3 text-sm text-ink-muted">
+              Choose a topic and WhatsApp will open with a pre-filled message. A consultant can
+              take it from there.
+            </p>
+            <ol className="mt-4 space-y-2">
+              {WHATSAPP_TOPICS.map((topic) => (
+                <li key={topic.id}>
+                  <WhatsAppLink
+                    message={topic.message}
+                    className="flex items-center justify-between gap-3 border border-stone-line px-3 py-2.5 text-sm text-ink transition hover:border-moss hover:bg-stone-soft"
+                  >
+                    <span>
+                      {topic.id}. {topic.label}
+                    </span>
+                    <WhatsAppIcon className="text-moss" />
+                  </WhatsAppLink>
+                </li>
+              ))}
+            </ol>
           </div>
           <div className="border border-stone-line bg-white p-6 md:p-8">
             <h2 className="font-display text-2xl text-ink">Delivery areas</h2>

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { WhatsAppIcon, WhatsAppLink } from "@/components/WhatsAppLink";
 import { SITE } from "@/data/catalog";
 
 export function Footer() {
@@ -26,8 +27,8 @@ export function Footer() {
             </span>
           </div>
           <p className="mt-4 text-sm leading-relaxed text-stone-muted">
-            Your trusted tile supplier in Pretoria East. Floor, wall, outdoor, commercial and
-            luxury tiles for residential and construction projects.
+            {SITE.brandTagline} Floor, wall, outdoor, commercial and luxury tiles for residential
+            and construction projects in Pretoria East.
           </p>
         </div>
 
@@ -101,6 +102,12 @@ export function Footer() {
               <a href={`mailto:${SITE.email}`} className="hover:text-stone-soft">
                 {SITE.email}
               </a>
+            </li>
+            <li>
+              <WhatsAppLink className="inline-flex items-center gap-2 hover:text-stone-soft">
+                <WhatsAppIcon />
+                Chat on WhatsApp
+              </WhatsAppLink>
             </li>
             <li>{SITE.hours}</li>
           </ul>

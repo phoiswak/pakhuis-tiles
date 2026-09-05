@@ -3,6 +3,7 @@ import { Fraunces, Manrope } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { SessionProvider } from "@/components/providers/SessionProvider";
+import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import "./globals.css";
 
 const display = Fraunces({
@@ -37,6 +38,7 @@ export default function RootLayout({
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
+          <WhatsAppFloat />
         </SessionProvider>
       </body>
     </html>
