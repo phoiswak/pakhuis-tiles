@@ -30,6 +30,26 @@ export function Footer() {
             {SITE.brandTagline} Floor, wall, outdoor, commercial and luxury tiles for residential
             and construction projects in Pretoria East.
           </p>
+          <div className="mt-5 flex items-center gap-2">
+            <a
+              href={SITE.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Pakhuis Tiles on Facebook"
+              className="inline-flex h-10 w-10 items-center justify-center border border-white/15 text-stone-muted transition hover:border-brass hover:text-stone-soft"
+            >
+              <FacebookIcon />
+            </a>
+            <a
+              href={SITE.tiktok}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Pakhuis Tiles on TikTok"
+              className="inline-flex h-10 w-10 items-center justify-center border border-white/15 text-stone-muted transition hover:border-brass hover:text-stone-soft"
+            >
+              <TikTokIcon />
+            </a>
+          </div>
         </div>
 
         <div>
@@ -126,5 +146,21 @@ export function Footer() {
         </div>
       </div>
     </footer>
+  );
+}
+
+function FacebookIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden>
+      <path d="M22 12.06C22 6.5 17.52 2 11.94 2S1.88 6.5 1.88 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.42V9.84c0-2.39 1.42-3.7 3.59-3.7 1.04 0 2.13.19 2.13.19v2.35h-1.2c-1.18 0-1.55.74-1.55 1.49v1.78h2.64l-.42 2.91h-2.22v7.03c4.78-.76 8.44-4.92 8.44-9.94Z" />
+    </svg>
+  );
+}
+
+function TikTokIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden>
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.76.14 2.89 2.89 0 0 1 2.88-3.02c.28 0 .54.04.8.1v-3.5a6.34 6.34 0 0 0-6.34 6.28 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.73a8.18 8.18 0 0 0 4.75 1.51V6.78a4.84 4.84 0 0 1-1.79-.09Z" />
+    </svg>
   );
 }
