@@ -36,6 +36,8 @@ export const SITE = {
   whatsappMessage: "Hi Pakhuis Tiles, I would like assistance with tiles and pricing.",
   email: "sales@pakhuis.co.za",
   hours: "Mon–Fri 08:00–17:00 · Sat 08:00–14:00",
+  facebook: "https://www.facebook.com/people/Pakhuis-Tiles/61593473920537/",
+  tiktok: "https://www.tiktok.com/@pakhuistiles",
   deliveryAreas: [
     "Pretoria",
     "Johannesburg",
