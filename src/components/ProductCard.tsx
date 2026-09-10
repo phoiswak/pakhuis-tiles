@@ -7,19 +7,26 @@ import { formatZar } from "@/lib/utils";
 export function ProductCard({ product }: { product: Product }) {
   const price = effectivePrice(product);
   const onPromo = product.promoPricePerM2 != null;
+  const showFullImage = product.image.includes("plank");
 
   return (
     <Link
       href={`/products/${product.slug}`}
       className="group flex flex-col overflow-hidden border border-stone-line bg-white transition duration-300 hover:-translate-y-0.5 hover:border-moss/40 hover:shadow-[0_18px_40px_-28px_rgba(28,25,23,0.45)]"
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-stone-soft">
+      <div
+        className={`relative overflow-hidden bg-stone-soft ${showFullImage ? "aspect-[2/3]" : "aspect-[4/3]"}`}
+      >
         <Image
           src={product.image}
           alt={product.name}
           fill
           unoptimized
-          className="object-cover transition duration-500 group-hover:scale-[1.04]"
+          className={
+            showFullImage
+              ? "object-contain p-2 transition duration-500 group-hover:scale-[1.02]"
+              : "object-cover transition duration-500 group-hover:scale-[1.04]"
+          }
           sizes="(max-width: 768px) 100vw, 33vw"
         />
         <div className="absolute left-3 top-3 flex flex-wrap gap-2">
