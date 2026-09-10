@@ -53,17 +53,13 @@ export default async function ProductPage({ params }: Props) {
       </p>
 
       <div className="mt-6 grid gap-10 lg:grid-cols-2">
-        <div
-          className={`relative overflow-hidden border border-stone-line bg-stone-soft ${
-            product.image.includes("plank") ? "aspect-[2/3]" : "aspect-square"
-          }`}
-        >
+        <div className="relative aspect-square overflow-hidden border border-stone-line bg-stone-soft">
           <Image
             src={product.image}
             alt={product.name}
             fill
             unoptimized
-            className={product.image.includes("plank") ? "object-contain p-3" : "object-cover"}
+            className="object-cover"
             sizes="(max-width: 1024px) 100vw, 50vw"
             priority
           />
