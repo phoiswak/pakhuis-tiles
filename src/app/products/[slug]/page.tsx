@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/ProductCard";
+import { SpecialRibbon } from "@/components/SpecialRibbon";
 import { getCategory, getProduct, getProductsByCategory } from "@/lib/catalog";
 import { effectivePrice } from "@/data/catalog";
 import { formatZar } from "@/lib/utils";
@@ -63,15 +64,11 @@ export default async function ProductPage({ params }: Props) {
             sizes="(max-width: 1024px) 100vw, 50vw"
             priority
           />
+          {product.isSpecial && <SpecialRibbon />}
         </div>
 
         <div>
           <div className="flex flex-wrap gap-2">
-            {product.isSpecial && (
-              <span className="bg-brass px-2 py-1 text-[10px] font-medium tracking-wider text-ink uppercase">
-                Monthly Special
-              </span>
-            )}
             <span className="border border-stone-line bg-white px-2 py-1 text-[10px] font-medium tracking-wider text-ink uppercase">
               {stockLabel}
             </span>
