@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Product } from "@/data/catalog";
 import { effectivePrice } from "@/data/catalog";
 import { formatZar } from "@/lib/utils";
+import { SpecialRibbon } from "@/components/SpecialRibbon";
 
 export function ProductCard({ product }: { product: Product }) {
   const price = effectivePrice(product);
@@ -22,12 +23,8 @@ export function ProductCard({ product }: { product: Product }) {
           className="object-cover transition duration-500 group-hover:scale-[1.04]"
           sizes="(max-width: 768px) 100vw, 33vw"
         />
-        <div className="absolute left-3 top-3 flex flex-wrap gap-2">
-          {product.isSpecial && (
-            <span className="bg-brass px-2 py-1 text-[10px] font-medium tracking-wider text-ink uppercase">
-              Monthly Special
-            </span>
-          )}
+        {product.isSpecial && <SpecialRibbon />}
+        <div className="absolute right-3 top-3">
           <span className="bg-white/90 px-2 py-1 text-[10px] font-medium tracking-wider text-ink uppercase backdrop-blur">
             {product.stockStatus === "IN_STOCK"
               ? "In Stock"
