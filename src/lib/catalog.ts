@@ -100,16 +100,63 @@ export async function searchProducts(query: string): Promise<Product[]> {
   });
 }
 
+function galleryLabel(product: Product) {
+  const size = product.sizeMm.replace(/x/gi, "×");
+  return `${size} ${product.finish.toLowerCase()} ${product.material.toLowerCase()} · ${product.sku}`;
+}
+
 export async function getGalleryItems() {
-  return catalogGalleryItems.map((item, sortOrder) => ({
-    id: item.image,
-    title: item.title,
-    description: item.description,
-    image: resolveTileSrc(item.image),
-    location: "location" in item ? (item as { location?: string }).location ?? null : null,
-    sortOrder,
-    createdAt: new Date(0),
-  }));
+  const visibleProducts = catalogProducts.filter(isVisibleProduct).map(resolveProduct);
+  const seenImages = new Set<string>();
+  const items: {
+    id: string;
+    title: string;
+    description: string;
+    image: string;
+    href: string | null;
+    location: string | null;
+    sortOrder: number;
+    createdAt: Date;
+  }[] = [];
+
+  const pushProduct = (product: Product) => {
+    const image = resolveTileSrc(product.image);
+    if (seenImages.has(image)) return;
+    seenImages.add(image);
+    items.push({
+      id: product.slug,
+      title: product.name,
+      description: galleryLabel(product),
+      image,
+      href: `/products/${product.slug}`,
+      location: null,
+      sortOrder: items.length,
+      createdAt: new Date(0),
+    });
+  };
+
+  visibleProducts.filter((product) => product.isSpecial).forEach(pushProduct);
+
+  for (const item of catalogGalleryItems) {
+    const image = resolveTileSrc(item.image);
+    if (seenImages.has(image)) continue;
+    seenImages.add(image);
+    const match = visibleProducts.find((product) => resolveTileSrc(product.image) === image);
+    items.push({
+      id: item.image,
+      title: item.title,
+      description: item.description,
+      image,
+      href: match ? `/products/${match.slug}` : null,
+      location: "location" in item ? (item as { location?: string }).location ?? null : null,
+      sortOrder: items.length,
+      createdAt: new Date(0),
+    });
+  }
+
+  visibleProducts.filter((product) => !product.isSpecial).forEach(pushProduct);
+
+  return items;
 }
 
 export async function getBlogPosts() {
