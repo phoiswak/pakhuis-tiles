@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { getGalleryItems } from "@/lib/catalog";
 import type { Metadata } from "next";
 
@@ -17,30 +18,47 @@ export default async function GalleryPage() {
       <p className="section-kicker">Our range</p>
       <h1 className="mt-2 font-display text-4xl text-ink md:text-5xl">Tile Gallery</h1>
       <p className="mt-4 max-w-2xl text-ink-muted">
-        600×1200mm matt porcelain from our Pretoria East warehouse. Visit the showroom to see
-        samples, or request a quote.
+        The full range from our Pretoria East warehouse, including this month’s specials. Visit
+        the showroom to see samples, or request a quote.
       </p>
       <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {galleryItems.map((item) => (
-          <figure key={item.image} className="overflow-hidden border border-stone-line bg-white">
-            <div className="relative aspect-[3/4]">
-              <Image
-                src={item.image}
-                alt={item.title}
-                fill
-                unoptimized
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 33vw"
-              />
-            </div>
-            <figcaption className="p-4">
-              <h2 className="font-display text-xl text-ink">{item.title}</h2>
-              {item.description && (
-                <p className="mt-1 text-sm text-ink-muted">{item.description}</p>
+        {galleryItems.map((item) => {
+          const card = (
+            <>
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  unoptimized
+                  className="object-cover transition duration-500 group-hover:scale-[1.04]"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </div>
+              <figcaption className="p-4">
+                <h2 className="font-display text-xl text-ink">{item.title}</h2>
+                {item.description && (
+                  <p className="mt-1 text-sm text-ink-muted">{item.description}</p>
+                )}
+              </figcaption>
+            </>
+          );
+
+          return (
+            <figure
+              key={item.id}
+              className="group overflow-hidden border border-stone-line bg-white"
+            >
+              {item.href ? (
+                <Link href={item.href} className="block hover:border-moss/40">
+                  {card}
+                </Link>
+              ) : (
+                card
               )}
-            </figcaption>
-          </figure>
-        ))}
+            </figure>
+          );
+        })}
       </div>
     </div>
   );
