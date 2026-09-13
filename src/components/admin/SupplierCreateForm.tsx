@@ -12,7 +12,8 @@ export function SupplierCreateForm() {
     e.preventDefault();
     setStatus("loading");
     setError("");
-    const form = new FormData(e.currentTarget);
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
     const payload = Object.fromEntries(form.entries());
 
     try {
@@ -26,7 +27,7 @@ export function SupplierCreateForm() {
         throw new Error(data.error || "Create failed");
       }
       setStatus("success");
-      e.currentTarget.reset();
+      formEl.reset();
       router.refresh();
     } catch (err) {
       setStatus("error");

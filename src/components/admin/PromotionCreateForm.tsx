@@ -12,7 +12,8 @@ export function PromotionCreateForm({ products }: { products: { id: string; name
     e.preventDefault();
     setStatus("loading");
     setError("");
-    const form = new FormData(e.currentTarget);
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
     const productIds = form.getAll("productIds").map(String);
     const payload = {
       name: String(form.get("name")),
@@ -35,7 +36,7 @@ export function PromotionCreateForm({ products }: { products: { id: string; name
         throw new Error(data.error || "Create failed");
       }
       setStatus("success");
-      e.currentTarget.reset();
+      formEl.reset();
       router.refresh();
     } catch (err) {
       setStatus("error");

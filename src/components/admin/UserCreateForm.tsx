@@ -12,7 +12,8 @@ export function UserCreateForm() {
     e.preventDefault();
     setStatus("loading");
     setError("");
-    const form = new FormData(e.currentTarget);
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
     const payload = {
       name: String(form.get("name")),
       email: String(form.get("email")),
@@ -32,7 +33,7 @@ export function UserCreateForm() {
         throw new Error(data.error || "Create failed");
       }
       setStatus("success");
-      e.currentTarget.reset();
+      formEl.reset();
       router.refresh();
     } catch (err) {
       setStatus("error");
