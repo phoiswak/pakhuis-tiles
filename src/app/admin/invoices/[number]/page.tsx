@@ -1,6 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getStaffInvoice } from "@/data/staff-invoices";
+import { getStaffInvoice, resolveInvoiceItems } from "@/data/staff-invoices";
 import { formatZar } from "@/lib/utils";
 
 type Props = { params: Promise<{ number: string }> };
@@ -9,6 +10,7 @@ export default async function AdminInvoiceDetailPage({ params }: Props) {
   const { number } = await params;
   const invoice = getStaffInvoice(number);
   if (!invoice) notFound();
+  const lines = resolveInvoiceItems(invoice);
 
   return (
     <div className="space-y-6">
@@ -58,42 +60,6 @@ export default async function AdminInvoiceDetailPage({ params }: Props) {
               </div>
             ))}
           </dl>
-
-          <table className="mt-6 w-full text-left text-sm">
-            <thead className="border-b border-stone-line text-xs tracking-wide text-ink-muted uppercase">
-              <tr>
-                <th className="py-2 font-medium">Item</th>
-                <th className="py-2 font-medium">Qty</th>
-                <th className="py-2 font-medium">Rate</th>
-                <th className="py-2 text-right font-medium">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoice.items.map((item) => (
-                <tr key={item.description} className="border-b border-stone-line/60">
-                  <td className="py-2">{item.description}</td>
-                  <td className="py-2">{item.quantity}</td>
-                  <td className="py-2">{formatZar(item.rate)}</td>
-                  <td className="py-2 text-right">{formatZar(item.amount)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <dl className="mt-4 ml-auto max-w-xs space-y-2 text-sm">
-            <div className="flex justify-between">
-              <dt className="text-ink-muted">Subtotal</dt>
-              <dd>{formatZar(invoice.subtotal)}</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt className="text-ink-muted">Tax ({invoice.taxPercent}%)</dt>
-              <dd>{formatZar(invoice.tax)}</dd>
-            </div>
-            <div className="flex justify-between font-medium">
-              <dt>Total</dt>
-              <dd>{formatZar(invoice.total)}</dd>
-            </div>
-          </dl>
         </div>
 
         <div className="border border-stone-line bg-white p-5">
@@ -101,6 +67,68 @@ export default async function AdminInvoiceDetailPage({ params }: Props) {
           <p className="mt-4 whitespace-pre-wrap text-sm text-ink">{invoice.notes}</p>
           <p className="mt-4 whitespace-pre-wrap text-sm text-ink-muted">{invoice.terms}</p>
         </div>
+      </div>
+
+      <div className="overflow-x-auto border border-stone-line bg-white p-5">
+        <h2 className="font-display text-xl text-ink">Line items</h2>
+        <table className="mt-4 w-full min-w-[860px] text-left text-sm">
+          <thead className="border-b border-stone-line text-xs tracking-wide text-ink-muted uppercase">
+            <tr>
+              <th className="py-2 pr-3 font-medium">Tile image</th>
+              <th className="py-2 pr-3 font-medium">Item</th>
+              <th className="py-2 pr-3 font-medium">Item code</th>
+              <th className="py-2 pr-3 font-medium">Tile size</th>
+              <th className="py-2 pr-3 font-medium">m²</th>
+              <th className="py-2 pr-3 font-medium">Boxes</th>
+              <th className="py-2 pr-3 font-medium">Rate</th>
+              <th className="py-2 text-right font-medium">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {lines.map((item) => (
+              <tr key={`${item.itemCode}-${item.name}`} className="border-b border-stone-line/60 align-middle">
+                <td className="py-3 pr-3">
+                  {item.image ? (
+                    <div className="relative h-16 w-24 overflow-hidden border border-stone-line bg-stone-soft">
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                        sizes="96px"
+                      />
+                    </div>
+                  ) : (
+                    "—"
+                  )}
+                </td>
+                <td className="py-3 pr-3">{item.name}</td>
+                <td className="py-3 pr-3 font-mono text-xs">{item.itemCode}</td>
+                <td className="py-3 pr-3">{item.sizeMm}</td>
+                <td className="py-3 pr-3">{item.quantityM2.toFixed(3)}</td>
+                <td className="py-3 pr-3">{item.boxesQuantity}</td>
+                <td className="py-3 pr-3">{formatZar(item.rate)}</td>
+                <td className="py-3 text-right">{formatZar(item.amount)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <dl className="mt-4 ml-auto max-w-xs space-y-2 text-sm">
+          <div className="flex justify-between">
+            <dt className="text-ink-muted">Subtotal</dt>
+            <dd>{formatZar(invoice.subtotal)}</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt className="text-ink-muted">Tax ({invoice.taxPercent}%)</dt>
+            <dd>{formatZar(invoice.tax)}</dd>
+          </div>
+          <div className="flex justify-between font-medium">
+            <dt>Total</dt>
+            <dd>{formatZar(invoice.total)}</dd>
+          </div>
+        </dl>
       </div>
 
       <div className="overflow-hidden border border-stone-line bg-white">

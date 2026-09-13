@@ -1,6 +1,11 @@
+import { products } from "@/data/catalog";
+
 export type StaffInvoiceItem = {
   description: string;
+  productSlug?: string;
   quantity: number;
+  quantityM2: number;
+  boxesQuantity: number;
   rate: number;
   amount: number;
 };
@@ -21,6 +26,13 @@ export type StaffInvoice = {
   terms: string;
 };
 
+export type ResolvedInvoiceItem = StaffInvoiceItem & {
+  name: string;
+  image: string | null;
+  itemCode: string;
+  sizeMm: string;
+};
+
 export const staffInvoices: StaffInvoice[] = [
   {
     number: "24364",
@@ -32,7 +44,10 @@ export const staffInvoices: StaffInvoice[] = [
     items: [
       {
         description: "Ashenwood Plank Wood Look",
+        productSlug: "ashenwood-plank-wood-look",
         quantity: 1,
+        quantityM2: 1.152,
+        boxesQuantity: 1,
         rate: 359,
         amount: 359,
       },
@@ -54,4 +69,22 @@ export function getStaffInvoice(number: string) {
 
 export function staffInvoicePdfPath(invoice: StaffInvoice) {
   return `src/data/invoices/${invoice.fileName}`;
+}
+
+export function resolveInvoiceItem(item: StaffInvoiceItem): ResolvedInvoiceItem {
+  const product = item.productSlug
+    ? products.find((entry) => entry.slug === item.productSlug)
+    : undefined;
+
+  return {
+    ...item,
+    name: product?.name ?? item.description,
+    image: product?.image ?? null,
+    itemCode: product?.sku ?? "—",
+    sizeMm: product?.sizeMm.replace(/x/gi, "×") ?? "—",
+  };
+}
+
+export function resolveInvoiceItems(invoice: StaffInvoice) {
+  return invoice.items.map(resolveInvoiceItem);
 }
