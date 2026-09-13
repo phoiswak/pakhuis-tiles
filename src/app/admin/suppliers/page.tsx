@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SupplierCreateForm } from "@/components/admin/SupplierCreateForm";
 import { prisma } from "@/lib/prisma";
 
@@ -25,6 +26,7 @@ export default async function AdminSuppliersPage() {
               <th className="px-3 py-2 font-medium">Phone</th>
               <th className="px-3 py-2 font-medium">VAT</th>
               <th className="px-3 py-2 font-medium">Active</th>
+              <th className="px-3 py-2 font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -36,6 +38,11 @@ export default async function AdminSuppliersPage() {
                 <td className="px-3 py-2">{s.phone || "—"}</td>
                 <td className="px-3 py-2">{s.vatNumber || "—"}</td>
                 <td className="px-3 py-2">{s.active ? "Yes" : "No"}</td>
+                <td className="px-3 py-2">
+                  <Link href={`/admin/suppliers/${s.id}`} className="text-moss hover:underline">
+                    Edit
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>
