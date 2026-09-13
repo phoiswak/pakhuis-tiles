@@ -1,3 +1,4 @@
+import { staffInvoices } from "@/data/staff-invoices";
 import { prisma } from "@/lib/prisma";
 import { formatZar } from "@/lib/utils";
 
@@ -63,10 +64,11 @@ export default async function AdminDashboardPage() {
   const lowStock = products.filter((p) => p.stockAvailable <= p.lowStockAt).length;
 
   const cards = [
-    { label: "New quotes", value: String(newQuotes), href: "/admin/quotes" },
-    { label: "Open quotes", value: String(openQuotes), href: "/admin/quotes" },
+    { label: "New quotes", value: String(newQuotes), href: "/admin/quotes", linkLabel: "View quotes →" },
+    { label: "Open quotes", value: String(openQuotes), href: "/admin/quotes", linkLabel: "View quotes →" },
     { label: "Total sales", value: formatZar(salesAgg._sum.total ?? 0) },
-    { label: "Orders", value: String(ordersCount) },
+    { label: "Orders", value: String(ordersCount), href: "/admin/orders", linkLabel: "View orders →" },
+    { label: "Invoices", value: String(staffInvoices.length), href: "/admin/invoices", linkLabel: "View invoices →" },
     { label: "Customers", value: String(activeCustomers) },
     { label: "Stock value", value: formatZar(stockValue) },
     { label: "Low stock", value: String(lowStock) },
@@ -89,7 +91,7 @@ export default async function AdminDashboardPage() {
             <p className="mt-2 font-display text-2xl text-ink">{card.value}</p>
             {"href" in card && card.href ? (
               <a href={card.href} className="mt-2 inline-block text-xs text-moss hover:underline">
-                View quotes →
+                {card.linkLabel ?? "Open →"}
               </a>
             ) : null}
           </div>
