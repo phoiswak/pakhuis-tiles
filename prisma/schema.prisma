@@ -202,6 +202,41 @@ model Invoice {
   paidAt        DateTime?
 }
 
+model SalesInvoice {
+  id            String   @id @default(cuid())
+  invoiceNumber String   @unique
+  billTo        String
+  tech          String   @default("")
+  issuedAt      DateTime
+  dueAt         DateTime
+  notes         String   @default("")
+  terms         String   @default("")
+  subtotal      Float
+  taxPercent    Float    @default(15)
+  tax           Float
+  total         Float
+  items         SalesInvoiceItem[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model SalesInvoiceItem {
+  id            String       @id @default(cuid())
+  invoiceId     String
+  invoice       SalesInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  productSlug   String?
+  description   String
+  itemCode      String       @default("")
+  sizeMm        String       @default("")
+  image         String?
+  quantity      Float        @default(1)
+  quantityM2    Float
+  boxesQuantity Float
+  rate          Float
+  amount        Float
+  sortOrder     Int          @default(0)
+}
+
 model QuoteRequest {
   id               String    @id @default(cuid())
   fullName         String

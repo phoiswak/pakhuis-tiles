@@ -1,13 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
-import { resolveInvoiceItems, staffInvoices } from "@/data/staff-invoices";
+import { resolveInvoiceItems } from "@/data/staff-invoices";
+import { listInvoices } from "@/lib/invoices";
 import { formatZar } from "@/lib/utils";
 
-export default function AdminInvoicesPage() {
+export const dynamic = "force-dynamic";
+
+export default async function AdminInvoicesPage() {
+  const invoices = await listInvoices();
+
   return (
     <div>
-      <h1 className="font-display text-3xl text-ink">Invoices</h1>
-      <p className="mt-1 text-sm text-ink-muted">{staffInvoices.length} invoices</p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="font-display text-3xl text-ink">Invoices</h1>
+          <p className="mt-1 text-sm text-ink-muted">{invoices.length} invoices</p>
+        </div>
+        <Link href="/admin/invoices/new" className="btn-primary">
+          New invoice
+        </Link>
+      </div>
       <div className="mt-6 overflow-x-auto border border-stone-line bg-white">
         <table className="w-full min-w-[1100px] border-collapse text-left text-sm">
           <thead className="border-b border-stone-line bg-stone-soft/60 text-xs tracking-wide text-ink-muted uppercase">
@@ -24,7 +36,7 @@ export default function AdminInvoicesPage() {
             </tr>
           </thead>
           <tbody>
-            {staffInvoices.map((invoice) => {
+            {invoices.map((invoice) => {
               const lines = resolveInvoiceItems(invoice);
               return lines.map((item, index) => (
                 <tr key={`${invoice.number}-${item.itemCode}-${index}`} className="border-b border-stone-line/70">
@@ -73,6 +85,13 @@ export default function AdminInvoicesPage() {
                 </tr>
               ));
             })}
+            {!invoices.length && (
+              <tr>
+                <td colSpan={9} className="px-3 py-6 text-center text-ink-muted">
+                  No invoices yet.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

@@ -1,8 +1,7 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { NextResponse } from "next/server";
 import { requireStaffSession } from "@/lib/auth";
-import { getStaffInvoice, staffInvoicePdfPath } from "@/data/staff-invoices";
+import { generateInvoicePdf } from "@/lib/invoice-pdf";
+import { getInvoice } from "@/lib/invoices";
 
 type Props = { params: Promise<{ number: string }> };
 
@@ -13,16 +12,15 @@ export async function GET(request: Request, { params }: Props) {
   }
 
   const { number } = await params;
-  const invoice = getStaffInvoice(number);
+  const invoice = await getInvoice(number);
   if (!invoice) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  const filePath = path.join(process.cwd(), staffInvoicePdfPath(invoice));
-  const file = await readFile(filePath);
+  const file = await generateInvoicePdf(invoice);
   const download = new URL(request.url).searchParams.get("download") === "1";
 
-  return new NextResponse(file, {
+  return new NextResponse(Buffer.from(file), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `${download ? "attachment" : "inline"}; filename="Invoice ${invoice.number}.pdf"`,
