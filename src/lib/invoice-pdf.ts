@@ -149,7 +149,7 @@ export async function generateInvoicePdf(invoice: StaffInvoice) {
   const issued = new Date(`${invoice.issuedAt}T00:00:00`).toLocaleDateString("en-ZA");
   const due = new Date(`${invoice.dueAt}T00:00:00`).toLocaleDateString("en-ZA");
   drawLabelValue(page, font, bold, "Bill to", invoice.billTo, MARGIN, y, 220);
-  drawLabelValue(page, font, bold, "Tech", invoice.tech || "—", 280, y, 120);
+  drawLabelValue(page, font, bold, "Sales person", invoice.tech || "—", 270, y, 140);
   drawLabelValue(page, font, bold, "Date", issued, 420, y, 70);
   drawLabelValue(page, font, bold, "Due date", due, 500, y, 55);
   y -= 52;
