@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { CustomerCreateForm } from "@/components/admin/CustomerCreateForm";
+import { CustomerDeleteButton } from "@/components/admin/CustomerDeleteButton";
 import { prisma } from "@/lib/prisma";
 
 export default async function AdminCustomersPage() {
@@ -26,6 +28,7 @@ export default async function AdminCustomersPage() {
               <th className="px-3 py-2 font-medium">Tier</th>
               <th className="px-3 py-2 font-medium">Orders</th>
               <th className="px-3 py-2 font-medium">Email</th>
+              <th className="px-3 py-2 font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -37,6 +40,14 @@ export default async function AdminCustomersPage() {
                 <td className="px-3 py-2">{c.pricingTier}</td>
                 <td className="px-3 py-2">{c._count.orders}</td>
                 <td className="px-3 py-2 text-ink-muted">{c.email}</td>
+                <td className="px-3 py-2">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Link href={`/admin/customers/${c.id}`} className="text-moss hover:underline">
+                      Edit
+                    </Link>
+                    <CustomerDeleteButton id={c.id} name={c.contactPerson} />
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>

@@ -30,15 +30,20 @@ export default function AdminReportsPage() {
   return (
     <div>
       <h1 className="font-display text-3xl text-ink">Reports</h1>
-      <p className="mt-1 text-sm text-ink-muted">Download CSV exports</p>
+      <p className="mt-1 text-sm text-ink-muted">Download Excel-ready CSV or PDF exports</p>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {reports.map((r) => (
           <div key={r.type} className="flex flex-col border border-stone-line bg-white p-5">
             <h2 className="font-display text-xl text-ink">{r.title}</h2>
             <p className="mt-2 flex-1 text-sm text-ink-muted">{r.description}</p>
-            <a href={`/api/admin/reports/${r.type}`} className="btn-secondary mt-5 self-start">
-              Download CSV
-            </a>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <a href={`/api/admin/reports/${r.type}`} className="btn-secondary">
+                Download CSV
+              </a>
+              <a href={`/api/admin/reports/${r.type}?format=pdf`} className="btn-primary">
+                Download PDF
+              </a>
+            </div>
           </div>
         ))}
       </div>
