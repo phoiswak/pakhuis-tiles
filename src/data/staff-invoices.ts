@@ -1,8 +1,25 @@
-import { products } from "@/data/catalog";
+import { products, SITE } from "@/data/catalog";
+
+export const INVOICE_COMPANY = {
+  legalName: "PAKHUISGAUTENG (Pty) Ltd",
+  tradingAs: SITE.name,
+  address: SITE.address,
+  phone: SITE.phone,
+  email: SITE.email,
+};
+
+export const DEFAULT_INVOICE_NOTES =
+  "Please note that all products will only be released once payment has been received and confirmed.";
+
+export const DEFAULT_INVOICE_TERMS =
+  "Business Name: PAKHUISGAUTENG (Pty) Ltd\nBank Name: FNB Bank\nAccount type: Business Account\nAccount Number: 53002806361\nBranch code: 678910";
 
 export type StaffInvoiceItem = {
   description: string;
   productSlug?: string;
+  itemCode?: string;
+  sizeMm?: string;
+  image?: string | null;
   quantity: number;
   quantityM2: number;
   boxesQuantity: number;
@@ -56,10 +73,8 @@ export const staffInvoices: StaffInvoice[] = [
     taxPercent: 15,
     tax: 53.85,
     total: 412.85,
-    notes:
-      "Please note that all products will only be released once payment has been received and confirmed.",
-    terms:
-      "Business Name: PAKHUISGAUTENG (Pty) Ltd\nBank Name: FNB Bank\nAccount type: Business Account\nAccount Number: 53002806361\nBranch code: 678910",
+    notes: DEFAULT_INVOICE_NOTES,
+    terms: DEFAULT_INVOICE_TERMS,
   },
 ];
 
@@ -79,9 +94,9 @@ export function resolveInvoiceItem(item: StaffInvoiceItem): ResolvedInvoiceItem 
   return {
     ...item,
     name: product?.name ?? item.description,
-    image: product?.image ?? null,
-    itemCode: product?.sku ?? "—",
-    sizeMm: product?.sizeMm.replace(/x/gi, "×") ?? "—",
+    image: item.image || product?.image || null,
+    itemCode: item.itemCode || product?.sku || "—",
+    sizeMm: (item.sizeMm || product?.sizeMm || "—").replace(/x/gi, "×"),
   };
 }
 

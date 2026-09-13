@@ -1,4 +1,4 @@
-import { staffInvoices } from "@/data/staff-invoices";
+import { listInvoices } from "@/lib/invoices";
 import { prisma } from "@/lib/prisma";
 import { formatZar } from "@/lib/utils";
 
@@ -16,6 +16,7 @@ export default async function AdminDashboardPage() {
     newQuotes,
     openQuotes,
     recentQuotes,
+    invoices,
   ] = await Promise.all([
     prisma.order.aggregate({
       where: {
@@ -58,6 +59,7 @@ export default async function AdminDashboardPage() {
       orderBy: { createdAt: "desc" },
       take: 5,
     }),
+    listInvoices(),
   ]);
 
   const stockValue = products.reduce((sum, p) => sum + p.stockAvailable * p.costPrice, 0);
@@ -68,7 +70,7 @@ export default async function AdminDashboardPage() {
     { label: "Open quotes", value: String(openQuotes), href: "/admin/quotes", linkLabel: "View quotes →" },
     { label: "Total sales", value: formatZar(salesAgg._sum.total ?? 0) },
     { label: "Orders", value: String(ordersCount), href: "/admin/orders", linkLabel: "View orders →" },
-    { label: "Invoices", value: String(staffInvoices.length), href: "/admin/invoices", linkLabel: "View invoices →" },
+    { label: "Invoices", value: String(invoices.length), href: "/admin/invoices", linkLabel: "View invoices →" },
     { label: "Customers", value: String(activeCustomers) },
     { label: "Stock value", value: formatZar(stockValue) },
     { label: "Low stock", value: String(lowStock) },

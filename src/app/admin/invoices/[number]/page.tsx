@@ -1,14 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getStaffInvoice, resolveInvoiceItems } from "@/data/staff-invoices";
+import { resolveInvoiceItems } from "@/data/staff-invoices";
+import { getInvoice } from "@/lib/invoices";
 import { formatZar } from "@/lib/utils";
 
 type Props = { params: Promise<{ number: string }> };
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminInvoiceDetailPage({ params }: Props) {
   const { number } = await params;
-  const invoice = getStaffInvoice(number);
+  const invoice = await getInvoice(number);
   if (!invoice) notFound();
   const lines = resolveInvoiceItems(invoice);
 
