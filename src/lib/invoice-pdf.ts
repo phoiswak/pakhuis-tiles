@@ -80,6 +80,7 @@ export async function generateInvoicePdf(invoice: StaffInvoice) {
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
   const lines = resolveInvoiceItems(invoice);
   const images = await Promise.all(lines.map((item) => embedImage(pdf, item.image)));
+  const logo = await embedImage(pdf, "/images/logo.jpg");
 
   let page = pdf.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
   let y = PAGE_HEIGHT - MARGIN;
@@ -93,8 +94,20 @@ export async function generateInvoicePdf(invoice: StaffInvoice) {
     if (y - needed < MARGIN + 40) addPage();
   };
 
+  const logoSize = 46;
+  const textX = logo ? MARGIN + logoSize + 12 : MARGIN;
+  if (logo) {
+    const fitted = logo.scaleToFit(logoSize, logoSize);
+    page.drawImage(logo, {
+      x: MARGIN + (logoSize - fitted.width) / 2,
+      y: y - fitted.height + 14,
+      width: fitted.width,
+      height: fitted.height,
+    });
+  }
+
   page.drawText(INVOICE_COMPANY.tradingAs.toUpperCase(), {
-    x: MARGIN,
+    x: textX,
     y,
     size: 18,
     font: bold,
@@ -109,7 +122,7 @@ export async function generateInvoicePdf(invoice: StaffInvoice) {
   });
   y -= 18;
 
-  page.drawText(INVOICE_COMPANY.legalName, { x: MARGIN, y, size: 9, font, color: MUTED });
+  page.drawText(INVOICE_COMPANY.legalName, { x: textX, y, size: 9, font, color: MUTED });
   page.drawText(`#${invoice.number}`, {
     x: PAGE_WIDTH - MARGIN - font.widthOfTextAtSize(`#${invoice.number}`, 12),
     y,
@@ -120,7 +133,7 @@ export async function generateInvoicePdf(invoice: StaffInvoice) {
   y -= 14;
 
   [INVOICE_COMPANY.address, INVOICE_COMPANY.phone, INVOICE_COMPANY.email].forEach((line) => {
-    page.drawText(line, { x: MARGIN, y, size: 9, font, color: MUTED });
+    page.drawText(line, { x: textX, y, size: 9, font, color: MUTED });
     y -= 12;
   });
 

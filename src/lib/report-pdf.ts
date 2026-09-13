@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { PDFDocument, StandardFonts, rgb, type PDFFont } from "pdf-lib";
 import { SITE } from "@/data/catalog";
 import type { ReportData } from "@/lib/reports";
@@ -29,10 +31,20 @@ function wrapText(text: string, font: PDFFont, size: number, maxWidth: number) {
   return lines.length ? lines : [""];
 }
 
+async function embedLogo(pdf: PDFDocument) {
+  try {
+    const bytes = await readFile(path.join(process.cwd(), "public", "images", "logo.jpg"));
+    return await pdf.embedJpg(bytes);
+  } catch {
+    return null;
+  }
+}
+
 export async function generateReportPdf(report: ReportData) {
   const pdf = await PDFDocument.create();
   const font = await pdf.embedFont(StandardFonts.Helvetica);
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
+  const logo = await embedLogo(pdf);
   const tableWidth = PAGE_WIDTH - MARGIN * 2;
   const totalUnits = report.columns.reduce((sum, column) => sum + column.width, 0);
   const columns = report.columns.map((column) => ({
@@ -46,7 +58,18 @@ export async function generateReportPdf(report: ReportData) {
   let pageNumber = 1;
 
   const drawHeader = () => {
-    page.drawText(SITE.name.toUpperCase(), { x: MARGIN, y, size: 11, font: bold, color: MOSS });
+    const logoSize = 22;
+    const titleX = logo ? MARGIN + logoSize + 8 : MARGIN;
+    if (logo) {
+      const fitted = logo.scaleToFit(logoSize, logoSize);
+      page.drawImage(logo, {
+        x: MARGIN,
+        y: y - 6,
+        width: fitted.width,
+        height: fitted.height,
+      });
+    }
+    page.drawText(SITE.name.toUpperCase(), { x: titleX, y, size: 11, font: bold, color: MOSS });
     const pageLabel = `Page ${pageNumber}`;
     page.drawText(pageLabel, {
       x: PAGE_WIDTH - MARGIN - font.widthOfTextAtSize(pageLabel, 9),

@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["@prisma/client", "prisma"],
   outputFileTracingIncludes: {
     "/api/admin/invoices/**": ["./src/data/invoices/**", "./public/images/**"],
+    "/api/admin/reports/**": ["./public/images/logo.jpg"],
   },
   typescript: {
     ignoreBuildErrors: true,
