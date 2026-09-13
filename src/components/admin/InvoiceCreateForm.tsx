@@ -82,19 +82,21 @@ export function InvoiceCreateForm({
   nextNumber,
   products,
   customers,
-  defaultTech,
+  defaultSalesPerson,
+  salesPeople,
 }: {
   nextNumber: string;
   products: InvoiceProductOption[];
   customers: InvoiceCustomerOption[];
-  defaultTech: string;
+  defaultSalesPerson: string;
+  salesPeople: string[];
 }) {
   const router = useRouter();
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [error, setError] = useState("");
   const [billTo, setBillTo] = useState("");
   const [customerId, setCustomerId] = useState("");
-  const [tech, setTech] = useState(defaultTech);
+  const [tech, setTech] = useState(defaultSalesPerson);
   const [issuedAt, setIssuedAt] = useState(todayIso());
   const [dueAt, setDueAt] = useState(plusDaysIso(2));
   const [taxPercent, setTaxPercent] = useState(15);
@@ -224,10 +226,22 @@ export function InvoiceCreateForm({
           />
         </div>
         <div>
-          <label className="field-label" htmlFor="tech">
-            Tech
+          <label className="field-label" htmlFor="salesPerson">
+            Sales person
           </label>
-          <input id="tech" className="field" value={tech} onChange={(event) => setTech(event.target.value)} />
+          <input
+            id="salesPerson"
+            className="field"
+            list="sales-people"
+            required
+            value={tech}
+            onChange={(event) => setTech(event.target.value)}
+          />
+          <datalist id="sales-people">
+            {salesPeople.map((name) => (
+              <option key={name} value={name} />
+            ))}
+          </datalist>
         </div>
         <div>
           <p className="field-label">Invoice number</p>

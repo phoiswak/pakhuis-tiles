@@ -43,7 +43,7 @@ export default async function AdminInvoiceDetailPage({ params }: Props) {
           <dl className="mt-4 grid gap-3 text-sm">
             {[
               { label: "Bill to", value: invoice.billTo },
-              { label: "Tech", value: invoice.tech },
+              { label: "Sales person", value: invoice.tech },
               {
                 label: "Date",
                 value: new Date(`${invoice.issuedAt}T00:00:00`).toLocaleDateString("en-ZA"),

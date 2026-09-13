@@ -9,7 +9,7 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function AdminNewInvoicePage() {
-  const [nextNumber, session, customers] = await Promise.all([
+  const [nextNumber, session, customers, salesPeople] = await Promise.all([
     nextInvoiceNumber(),
     getServerSession(authOptions),
     prisma.customer
@@ -17,6 +17,14 @@ export default async function AdminNewInvoicePage() {
         orderBy: { contactPerson: "asc" },
         select: { id: true, contactPerson: true, companyName: true },
       })
+      .catch(() => []),
+    prisma.user
+      .findMany({
+        where: { active: true, role: { in: ["ADMIN", "STORE_MANAGER", "SALES"] } },
+        orderBy: { name: "asc" },
+        select: { name: true },
+      })
+      .then((users) => users.map((user) => user.name).filter(Boolean))
       .catch(() => []),
   ]);
 
@@ -34,7 +42,8 @@ export default async function AdminNewInvoicePage() {
 
       <InvoiceCreateForm
         nextNumber={nextNumber}
-        defaultTech={session?.user?.name ?? ""}
+        defaultSalesPerson={session?.user?.name ?? ""}
+        salesPeople={salesPeople}
         customers={customers}
         products={products.map((product) => ({
           slug: product.slug,
