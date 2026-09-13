@@ -14,7 +14,8 @@ export function DamageRecordForm({ products }: { products: Option[] }) {
     e.preventDefault();
     setStatus("loading");
     setError("");
-    const form = new FormData(e.currentTarget);
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
     const payload = {
       productId: String(form.get("productId")),
       quantity: Number(form.get("quantity")),
@@ -33,7 +34,7 @@ export function DamageRecordForm({ products }: { products: Option[] }) {
         throw new Error(data.error || "Record failed");
       }
       setStatus("success");
-      e.currentTarget.reset();
+      formEl.reset();
       router.refresh();
     } catch (err) {
       setStatus("error");
