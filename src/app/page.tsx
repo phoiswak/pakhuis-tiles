@@ -5,22 +5,23 @@ import { HomeHero } from "@/components/HomeHero";
 import { ProductCard } from "@/components/ProductCard";
 import { Reveal } from "@/components/Reveal";
 import { SITE, testimonials } from "@/data/catalog";
-import { HERO_SALE_SLIDES, isMonthlySaleActive } from "@/data/monthly-sale";
-import { getCategories, getFeaturedProducts, resolveTileSrc } from "@/lib/catalog";
+import { HERO_SALE_SLIDES } from "@/data/monthly-sale";
+import { getCategories, getFeaturedProducts, getSpecials, resolveTileSrc } from "@/lib/catalog";
 import { Calculator, MapPin, Truck } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [categories, featuredAll] = await Promise.all([
+  const [categories, featuredAll, specials] = await Promise.all([
     getCategories(),
     getFeaturedProducts(),
+    getSpecials(),
   ]);
   const featured = featuredAll.slice(0, 8);
 
   return (
     <>
-      <HomeHero saleActive={isMonthlySaleActive()} slides={HERO_SALE_SLIDES} />
+      <HomeHero saleActive={specials.length > 0} slides={HERO_SALE_SLIDES} />
 
       <section className="border-b border-stone-line bg-white/70">
         <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 md:grid-cols-3 md:px-6">

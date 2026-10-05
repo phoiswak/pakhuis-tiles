@@ -8,6 +8,7 @@ import {
   galleryItems,
   products as catalogProducts,
 } from "../src/data/catalog";
+import { MONTHLY_SALE_MONTH } from "../src/data/monthly-sale";
 
 const prisma = new PrismaClient();
 
@@ -48,9 +49,7 @@ async function main() {
         finish: p.finish,
         material: p.material,
         pricePerM2: p.pricePerM2,
-        promoPricePerM2: p.promoPricePerM2 ?? null,
         isFeatured: p.isFeatured,
-        isSpecial: p.isSpecial,
       },
       create: {
         slug: p.slug,
@@ -69,6 +68,8 @@ async function main() {
         stockAvailable: p.stockStatus === "LOW_STOCK" ? 12 : 180,
         isFeatured: p.isFeatured,
         isSpecial: p.isSpecial,
+        specialYear: p.isSpecial ? MONTHLY_SALE_MONTH.year : null,
+        specialMonth: p.isSpecial ? MONTHLY_SALE_MONTH.month : null,
         categoryId,
       },
     });

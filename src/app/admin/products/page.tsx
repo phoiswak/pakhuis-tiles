@@ -11,7 +11,13 @@ export default async function AdminProductsPage() {
   return (
     <div>
       <h1 className="font-display text-3xl text-ink">Products</h1>
-      <p className="mt-1 text-sm text-ink-muted">{products.length} products</p>
+      <p className="mt-1 text-sm text-ink-muted">
+        {products.length} products. Add monthly specials under{" "}
+        <Link href="/admin/promotions" className="text-moss hover:underline">
+          Promotions
+        </Link>
+        .
+      </p>
       <div className="mt-6 overflow-x-auto border border-stone-line bg-white">
         <table className="w-full min-w-[720px] border-collapse text-left text-sm">
           <thead className="border-b border-stone-line bg-stone-soft/60 text-xs tracking-wide text-ink-muted uppercase">

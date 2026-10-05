@@ -90,6 +90,10 @@ model Product {
   lowStockAt      Float    @default(20)
   isFeatured      Boolean  @default(false)
   isSpecial       Boolean  @default(false)
+  /// Calendar month the special is valid for (1–12). Null = use legacy monthly sale window.
+  specialMonth    Int?
+  /// Calendar year the special is valid for, Africa/Johannesburg.
+  specialYear     Int?
   active          Boolean  @default(true)
   categoryId      String
   category        Category @relation(fields: [categoryId], references: [id])
