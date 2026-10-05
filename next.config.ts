@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     unoptimized: true,
-    localPatterns: [{ pathname: "/images/**" }],
+    localPatterns: [{ pathname: "/images/**" }, { pathname: "/api/media/**" }],
   },
 };
 

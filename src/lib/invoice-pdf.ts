@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFImage, type PDFPage } from "pdf-lib";
 import { INVOICE_COMPANY, resolveInvoiceItems, type StaffInvoice } from "@/data/staff-invoices";
+import { prisma } from "@/lib/prisma";
 
 const PAGE_WIDTH = 595.28;
 const PAGE_HEIGHT = 841.89;
@@ -34,26 +35,53 @@ function wrapText(text: string, font: PDFFont, size: number, maxWidth: number) {
   return lines.length ? lines : [""];
 }
 
-async function embedImage(pdf: PDFDocument, imagePath: string | null) {
-  if (!imagePath) return null;
+function embedFromBytes(pdf: PDFDocument, bytes: Uint8Array) {
+  const header = bytes.subarray(0, 4);
+  const isPng = header[0] === 0x89 && header[1] === 0x50;
+  return isPng ? pdf.embedPng(bytes) : pdf.embedJpg(bytes);
+}
+
+async function loadImageBytes(imagePath: string): Promise<Uint8Array | null> {
+  if (imagePath.startsWith("data:image/")) {
+    const comma = imagePath.indexOf(",");
+    if (comma < 0) return null;
+    return Buffer.from(imagePath.slice(comma + 1), "base64");
+  }
+
+  if (imagePath.startsWith("/api/media/")) {
+    const id = imagePath.slice("/api/media/".length).split("?")[0];
+    if (!id) return null;
+    const row = await prisma.uploadedImage.findUnique({
+      where: { id },
+      select: { bytes: true },
+    });
+    return row ? Buffer.from(row.bytes) : null;
+  }
+
   const relative = imagePath.replace(/^\//, "").replace(/\//g, path.sep);
   const candidates = [
     path.join(process.cwd(), "public", relative),
     path.join(process.cwd(), relative),
   ];
-
   for (const filePath of candidates) {
     try {
-      const bytes = await readFile(filePath);
-      const header = bytes.subarray(0, 4);
-      const isPng = header[0] === 0x89 && header[1] === 0x50;
-      return isPng ? await pdf.embedPng(bytes) : await pdf.embedJpg(bytes);
+      return await readFile(filePath);
     } catch {
       // Try the next location or skip if the warehouse photo is not on disk.
     }
   }
-
   return null;
+}
+
+async function embedImage(pdf: PDFDocument, imagePath: string | null) {
+  if (!imagePath) return null;
+  try {
+    const bytes = await loadImageBytes(imagePath);
+    if (!bytes) return null;
+    return await embedFromBytes(pdf, bytes);
+  } catch {
+    return null;
+  }
 }
 
 function drawLabelValue(

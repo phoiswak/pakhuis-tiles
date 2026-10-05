@@ -321,3 +321,12 @@ model AuditLog {
   details   String?
   createdAt DateTime @default(now())
 }
+
+/// Admin-uploaded tile photos. Served from /api/media/[id] so they persist on Vercel.
+model UploadedImage {
+  id        String   @id @default(cuid())
+  filename  String?
+  mimeType  String
+  bytes     Bytes
+  createdAt DateTime @default(now())
+}

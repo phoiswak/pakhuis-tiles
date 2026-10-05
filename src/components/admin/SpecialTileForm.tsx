@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MONTH_OPTIONS, specialYearOptions } from "@/lib/specials";
+import { uploadTilePhoto } from "@/lib/upload-tile-photo";
 
 export function SpecialTileForm({
   categories,
@@ -15,7 +16,19 @@ export function SpecialTileForm({
   const years = specialYearOptions();
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [error, setError] = useState("");
-  const [image, setImage] = useState(images[0] ?? "");
+  const [image, setImage] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState("");
+
+  useEffect(() => {
+    if (!file) {
+      setPreview("");
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -23,24 +36,29 @@ export function SpecialTileForm({
     setError("");
     const formEl = e.currentTarget;
     const form = new FormData(formEl);
-      const imageValue = String(form.get("imageUrl") || "").trim() || String(form.get("image") || "");
-    const payload = {
-      name: String(form.get("name")),
-      description: form.get("description") ? String(form.get("description")) : undefined,
-      image: imageValue,
-      sizeMm: String(form.get("sizeMm")),
-      finish: form.get("finish") ? String(form.get("finish")) : undefined,
-      material: form.get("material") ? String(form.get("material")) : undefined,
-      categoryId: String(form.get("categoryId")),
-      pricePerM2: Number(form.get("pricePerM2")),
-      promoPricePerM2: form.get("promoPricePerM2") ? Number(form.get("promoPricePerM2")) : null,
-      stockAvailable: form.get("stockAvailable") ? Number(form.get("stockAvailable")) : 50,
-      isSpecial: true,
-      specialYear: Number(form.get("specialYear")),
-      specialMonth: Number(form.get("specialMonth")),
-    };
-
     try {
+      const uploaded = file ? await uploadTilePhoto(file) : "";
+      const imageValue =
+        uploaded || String(form.get("imageUrl") || "").trim() || String(form.get("image") || "");
+      if (!imageValue) {
+        throw new Error("Please add a photo of the tile.");
+      }
+      const payload = {
+        name: String(form.get("name")),
+        description: form.get("description") ? String(form.get("description")) : undefined,
+        image: imageValue,
+        sizeMm: String(form.get("sizeMm")),
+        finish: form.get("finish") ? String(form.get("finish")) : undefined,
+        material: form.get("material") ? String(form.get("material")) : undefined,
+        categoryId: String(form.get("categoryId")),
+        pricePerM2: Number(form.get("pricePerM2")),
+        promoPricePerM2: form.get("promoPricePerM2") ? Number(form.get("promoPricePerM2")) : null,
+        stockAvailable: form.get("stockAvailable") ? Number(form.get("stockAvailable")) : 50,
+        isSpecial: true,
+        specialYear: Number(form.get("specialYear")),
+        specialMonth: Number(form.get("specialMonth")),
+      };
+
       const res = await fetch("/api/admin/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -52,7 +70,8 @@ export function SpecialTileForm({
       }
       setStatus("success");
       formEl.reset();
-      setImage(images[0] ?? "");
+      setImage("");
+      setFile(null);
       router.refresh();
     } catch (err) {
       setStatus("error");
@@ -147,8 +166,30 @@ export function SpecialTileForm({
           </select>
         </div>
         <div className="sm:col-span-2">
+          <label className="field-label" htmlFor="photo">
+            Tile photo
+          </label>
+          <input
+            id="photo"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp"
+            className="field"
+            onChange={(event) => {
+              setFile(event.target.files?.[0] ?? null);
+              setStatus("idle");
+            }}
+          />
+          <p className="mt-1 text-xs text-ink-muted">
+            Upload a photo of this tile (WhatsApp pictures work). This is the picture customers see
+            in the shop.
+          </p>
+          {preview && (
+            <img src={preview} alt="Tile preview" className="mt-3 h-36 w-36 object-cover border border-stone-line bg-stone-soft" />
+          )}
+        </div>
+        <div className="sm:col-span-2">
           <label className="field-label" htmlFor="image">
-            Photo
+            Or use an existing shop photo
           </label>
           <select
             id="image"
@@ -157,7 +198,7 @@ export function SpecialTileForm({
             value={image}
             onChange={(event) => setImage(event.target.value)}
           >
-            <option value="">Use URL below</option>
+            <option value="">Choose a photo…</option>
             {images.map((src) => (
               <option key={src} value={src}>
                 {src.replace("/images/", "")}
