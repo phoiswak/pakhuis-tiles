@@ -31,8 +31,8 @@ export async function POST(request: Request) {
         name: parsed.data.name,
         description: parsed.data.description,
         discountPercent: parsed.data.discountPercent,
-        startDate: new Date(parsed.data.startDate),
-        endDate: new Date(parsed.data.endDate),
+        startDate: new Date(`${parsed.data.startDate}T00:00:00+02:00`),
+        endDate: new Date(`${parsed.data.endDate}T23:59:59+02:00`),
         featured: parsed.data.featured ?? false,
         products: parsed.data.productIds?.length
           ? {

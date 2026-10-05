@@ -5,26 +5,87 @@ import {
   galleryItems as catalogGalleryItems,
   products as catalogProducts,
 } from "@/data/catalog";
-import { isCampaignProduct, isMonthlySaleActive } from "@/data/monthly-sale";
+import { isCampaignProduct } from "@/data/monthly-sale";
 import { prisma } from "@/lib/prisma";
+import { stockLabel } from "@/lib/pricing";
+import { isSpecialLive } from "@/lib/specials";
 import { resolveTileSrc } from "@/lib/tile-src";
 
 export type { Category, Product, StockStatus };
 export { resolveTileSrc };
 
-function resolveProduct(product: Product): Product {
-  const saleLive = isMonthlySaleActive();
+type DbProduct = {
+  slug: string;
+  sku: string;
+  name: string;
+  description: string;
+  image: string;
+  sizeMm: string;
+  finish: string | null;
+  material: string | null;
+  pricePerM2: number;
+  promoPricePerM2: number | null;
+  stockAvailable: number;
+  lowStockAt: number;
+  isFeatured: boolean;
+  isSpecial: boolean;
+  specialYear: number | null;
+  specialMonth: number | null;
+  category: { slug: string };
+  promotions: { promotion: { active: boolean; startDate: Date; endDate: Date; discountPercent: number } }[];
+};
+
+function bestPromotionPrice(row: DbProduct, now = new Date()) {
+  const live = row.promotions
+    .map((entry) => entry.promotion)
+    .filter((promo) => promo.active && promo.startDate <= now && promo.endDate >= now);
+  if (!live.length) return null;
+  const discount = Math.max(...live.map((promo) => promo.discountPercent));
+  return Math.round(row.pricePerM2 * (1 - discount / 100) * 100) / 100;
+}
+
+function mapDbProduct(row: DbProduct): Product {
+  const liveSpecial = isSpecialLive(row);
+  const promotionPrice = bestPromotionPrice(row);
+  const promoPricePerM2 = liveSpecial
+    ? (row.promoPricePerM2 ?? promotionPrice ?? undefined)
+    : (promotionPrice ?? undefined);
+
   return {
-    ...product,
-    image: resolveTileSrc(product.image),
-    isSpecial: product.isSpecial && saleLive,
-    promoPricePerM2: saleLive ? product.promoPricePerM2 : undefined,
+    slug: row.slug,
+    sku: row.sku,
+    name: row.name,
+    description: row.description,
+    image: resolveTileSrc(row.image),
+    sizeMm: row.sizeMm,
+    finish: row.finish ?? "",
+    material: row.material ?? "",
+    pricePerM2: row.pricePerM2,
+    promoPricePerM2,
+    stockStatus: stockLabel(row.stockAvailable, row.lowStockAt) as StockStatus,
+    isFeatured: row.isFeatured,
+    isSpecial: liveSpecial || promoPricePerM2 != null,
+    categorySlug: row.category.slug,
   };
 }
 
-function isVisibleProduct(product: Product): boolean {
+function resolveCatalogProduct(product: Product): Product {
+  const live = isSpecialLive({
+    isSpecial: product.isSpecial,
+    specialYear: null,
+    specialMonth: null,
+  });
+  return {
+    ...product,
+    image: resolveTileSrc(product.image),
+    isSpecial: live,
+    promoPricePerM2: live ? product.promoPricePerM2 : undefined,
+  };
+}
+
+function isVisibleStorefrontProduct(product: Product) {
   if (!isCampaignProduct(product.sku)) return true;
-  return isMonthlySaleActive();
+  return product.isSpecial || product.promoPricePerM2 != null;
 }
 
 function resolveCategory(category: Category): Category {
@@ -33,6 +94,21 @@ function resolveCategory(category: Category): Category {
 
 function logCatalogFallback(fn: string, error: unknown) {
   console.error(`[catalog] ${fn} falling back to bundled catalogue`, error);
+}
+
+async function loadDbProducts() {
+  try {
+    return await prisma.product.findMany({
+      where: { active: true },
+      include: {
+        category: { select: { slug: true } },
+        promotions: { include: { promotion: true } },
+      },
+    });
+  } catch (error) {
+    logCatalogFallback("loadDbProducts", error);
+    return [];
+  }
 }
 
 export async function getCategories(): Promise<Category[]> {
@@ -45,32 +121,33 @@ export async function getCategory(slug: string): Promise<Category | null> {
 }
 
 export async function getProducts(): Promise<Product[]> {
-  return catalogProducts.filter(isVisibleProduct).map(resolveProduct);
+  const rows = await loadDbProducts();
+  const fromDb = new Map(rows.map((row) => [row.slug, mapDbProduct(row)]));
+  const merged = catalogProducts.map((product) => fromDb.get(product.slug) ?? resolveCatalogProduct(product));
+  const extras = [...fromDb.values()].filter(
+    (product) => !catalogProducts.some((entry) => entry.slug === product.slug),
+  );
+  return [...merged, ...extras].filter(isVisibleStorefrontProduct);
 }
 
 export async function getProduct(slug: string): Promise<Product | null> {
-  const fallback = catalogProducts.find((product) => product.slug === slug);
-  if (!fallback || !isVisibleProduct(fallback)) return null;
-  return resolveProduct(fallback);
+  const products = await getProducts();
+  return products.find((product) => product.slug === slug) ?? null;
 }
 
 export async function getProductsByCategory(slug: string): Promise<Product[]> {
-  return catalogProducts
-    .filter((product) => product.categorySlug === slug && isVisibleProduct(product))
-    .map(resolveProduct);
+  const products = await getProducts();
+  return products.filter((product) => product.categorySlug === slug);
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
-  return catalogProducts
-    .filter((product) => product.isFeatured && isVisibleProduct(product))
-    .map(resolveProduct);
+  const products = await getProducts();
+  return products.filter((product) => product.isFeatured);
 }
 
 export async function getSpecials(): Promise<Product[]> {
-  if (!isMonthlySaleActive()) return [];
-  return catalogProducts
-    .filter((product) => product.isSpecial || product.promoPricePerM2 != null)
-    .map(resolveProduct);
+  const products = await getProducts();
+  return products.filter((product) => product.isSpecial || product.promoPricePerM2 != null);
 }
 
 export async function searchProducts(query: string): Promise<Product[]> {
@@ -106,7 +183,7 @@ function galleryLabel(product: Product) {
 }
 
 export async function getGalleryItems() {
-  const visibleProducts = catalogProducts.filter(isVisibleProduct).map(resolveProduct);
+  const visibleProducts = await getProducts();
   const seenImages = new Set<string>();
   const items: {
     id: string;

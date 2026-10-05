@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { MONTH_OPTIONS, specialYearOptions } from "@/lib/specials";
 
 type Product = {
   id: string;
@@ -15,6 +16,8 @@ type Product = {
   lowStockAt: number;
   isFeatured: boolean;
   isSpecial: boolean;
+  specialYear: number | null;
+  specialMonth: number | null;
   active: boolean;
 };
 
@@ -45,6 +48,12 @@ export function ProductEditForm({ product }: { product: Product }) {
       lowStockAt: Number(form.get("lowStockAt")),
       isFeatured: form.get("isFeatured") === "on",
       isSpecial: form.get("isSpecial") === "on",
+      specialYear: form.get("isSpecial") === "on" && form.get("specialYear")
+        ? Number(form.get("specialYear"))
+        : null,
+      specialMonth: form.get("isSpecial") === "on" && form.get("specialMonth")
+        ? Number(form.get("specialMonth"))
+        : null,
       active: form.get("active") === "on",
     };
 
@@ -179,6 +188,24 @@ export function ProductEditForm({ product }: { product: Product }) {
         <label className="inline-flex items-center gap-2">
           <input type="checkbox" name="isSpecial" defaultChecked={product.isSpecial} />
           Special
+        </label>
+        <label className="inline-flex items-center gap-2">
+          <span className="text-ink-muted">Month</span>
+          <select name="specialMonth" className="field w-auto" defaultValue={product.specialMonth ?? ""}>
+            <option value="">—</option>
+            {MONTH_OPTIONS.map((month) => (
+              <option key={month.value} value={month.value}>
+                {month.label}
+              </option>
+            ))}
+          </select>
+          <select name="specialYear" className="field w-auto" defaultValue={product.specialYear ?? specialYearOptions()[0]}>
+            {specialYearOptions().map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
         </label>
         <label className="inline-flex items-center gap-2">
           <input type="checkbox" name="active" defaultChecked={product.active} />

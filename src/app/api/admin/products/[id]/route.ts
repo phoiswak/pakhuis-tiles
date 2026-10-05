@@ -14,6 +14,8 @@ const schema = z.object({
   lowStockAt: z.number().optional(),
   isFeatured: z.boolean().optional(),
   isSpecial: z.boolean().optional(),
+  specialYear: z.number().int().min(2024).max(2100).nullable().optional(),
+  specialMonth: z.number().int().min(1).max(12).nullable().optional(),
   active: z.boolean().optional(),
 });
 
