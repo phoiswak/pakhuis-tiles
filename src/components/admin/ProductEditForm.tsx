@@ -1,12 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MONTH_OPTIONS, specialYearOptions } from "@/lib/specials";
+import { uploadTilePhoto } from "@/lib/upload-tile-photo";
 
 type Product = {
   id: string;
   name: string;
+  image: string;
   costPrice: number;
   pricePerM2: number;
   contractorPrice: number | null;
@@ -25,13 +27,25 @@ export function ProductEditForm({ product }: { product: Product }) {
   const router = useRouter();
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [error, setError] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState("");
+
+  useEffect(() => {
+    if (!file) {
+      setPreview("");
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("loading");
     setError("");
     const form = new FormData(e.currentTarget);
-    const payload = {
+    const payload: Record<string, unknown> = {
       name: String(form.get("name") || ""),
       costPrice: Number(form.get("costPrice")),
       pricePerM2: Number(form.get("pricePerM2")),
@@ -58,6 +72,9 @@ export function ProductEditForm({ product }: { product: Product }) {
     };
 
     try {
+      if (file) {
+        payload.image = await uploadTilePhoto(file);
+      }
       const res = await fetch(`/api/admin/products/${product.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -68,6 +85,7 @@ export function ProductEditForm({ product }: { product: Product }) {
         throw new Error(data.error || "Update failed");
       }
       setStatus("success");
+      setFile(null);
       router.refresh();
     } catch (err) {
       setStatus("error");
@@ -82,6 +100,31 @@ export function ProductEditForm({ product }: { product: Product }) {
           Name
         </label>
         <input id="name" name="name" className="field" defaultValue={product.name} required />
+      </div>
+      <div>
+        <label className="field-label" htmlFor="photo">
+          Tile photo
+        </label>
+        <div className="mt-2 flex items-start gap-4">
+          <img
+            src={preview || product.image}
+            alt={product.name}
+            className="h-28 w-28 object-cover border border-stone-line bg-stone-soft"
+          />
+          <div className="flex-1">
+            <input
+              id="photo"
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp"
+              className="field"
+              onChange={(event) => {
+                setFile(event.target.files?.[0] ?? null);
+                setStatus("idle");
+              }}
+            />
+            <p className="mt-1 text-xs text-ink-muted">Leave empty to keep the current photo.</p>
+          </div>
+        </div>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div>

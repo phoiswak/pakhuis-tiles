@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 const schema = z.object({
   name: z.string().min(1).optional(),
+  image: z.string().min(1).optional(),
   costPrice: z.number().optional(),
   pricePerM2: z.number().optional(),
   contractorPrice: z.number().nullable().optional(),

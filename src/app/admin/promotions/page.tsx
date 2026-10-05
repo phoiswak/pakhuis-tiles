@@ -50,6 +50,7 @@ export default async function AdminPromotionsPage() {
           <table className="w-full min-w-[720px] border-collapse text-left text-sm">
             <thead className="border-b border-stone-line bg-stone-soft/60 text-xs tracking-wide text-ink-muted uppercase">
               <tr>
+                <th className="px-3 py-2 font-medium">Photo</th>
                 <th className="px-3 py-2 font-medium">Tile</th>
                 <th className="px-3 py-2 font-medium">Month</th>
                 <th className="px-3 py-2 font-medium">Regular</th>
@@ -62,6 +63,9 @@ export default async function AdminPromotionsPage() {
                 const month = MONTH_OPTIONS.find((entry) => entry.value === product.specialMonth);
                 return (
                   <tr key={product.id} className="border-b border-stone-line/70">
+                    <td className="px-3 py-2">
+                      <img src={product.image} alt="" className="h-12 w-12 object-cover bg-stone-soft" />
+                    </td>
                     <td className="px-3 py-2">{product.name}</td>
                     <td className="px-3 py-2 text-ink-muted">
                       {month ? `${month.label} ${product.specialYear ?? ""}` : "—"}
@@ -78,7 +82,7 @@ export default async function AdminPromotionsPage() {
               })}
               {!specials.length && (
                 <tr>
-                  <td colSpan={5} className="px-3 py-6 text-center text-ink-muted">
+                  <td colSpan={6} className="px-3 py-6 text-center text-ink-muted">
                     No monthly special tiles yet.
                   </td>
                 </tr>
