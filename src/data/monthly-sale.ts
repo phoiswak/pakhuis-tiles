@@ -11,24 +11,8 @@ export type HeroSaleSlide = {
   alt: string;
 };
 
-export const HERO_SALE_SLIDES: HeroSaleSlide[] = [
-  {
-    src: "/images/hero-sale-1.jpg",
-    alt: "September specials — Celtic Maple, Ashenwood, Armani Crystal and Celtic Mocca planks now R159 per square metre",
-  },
-  {
-    src: "/images/hero-sale-2.jpg",
-    alt: "Limited time tile specials — Veronda Charcoal, Carnival Black, EarthVein Taupe, Oyster Leaf Brown and Pacific Green",
-  },
-  {
-    src: "/images/hero-sale-3.jpg",
-    alt: "Opening specials — Newlands Grey, Ramco Grey, Light Grey Speckle, Atlantic Sand and Rainfall Pink",
-  },
-  {
-    src: "/images/hero-sale-4.jpg",
-    alt: "Opening special plank posters — Celtic Maple, Celtic Mocca, Ashenwood and Armani Crystal valid to 30 September",
-  },
-];
+/** Empty until the next month’s sale posters are added under /images/hero-sale-*. */
+export const HERO_SALE_SLIDES: HeroSaleSlide[] = [];
 
 export function endOfMonthSast(year: number, month: number): Date {
   const lastDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
